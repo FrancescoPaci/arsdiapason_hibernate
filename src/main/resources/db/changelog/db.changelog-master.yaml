@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/migrations/20220217155111_initial_tables.sql
+  - include:
+      file: db/changelog/migrations/20220221144233_insert_in_static_table.sql
+  - include:
+      file: db/changelog/migrations/20220228112400_create_table_area_prova.sql
+  - include:
+      file: db/changelog/migrations/20220302222600_add_field_test_finito_to_bambino.sql
+  - include:
+      file: db/changelog/migrations/20220319224900_add_temporary_code_to_utente.sql
+  - include:
+      file: db/changelog/migrations/20220331205700_add_istituto_0.sql
