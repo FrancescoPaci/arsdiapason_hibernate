@@ -1,6 +1,6 @@
 package comboDev.arsdiapason.security;
 
-import comboDev.arsdiapason.mybatis.model.Utente;
+import comboDev.arsdiapason.model.Utente;
 import comboDev.arsdiapason.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;

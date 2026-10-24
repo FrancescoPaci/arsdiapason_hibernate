@@ -1,9 +1,9 @@
 package comboDev.arsdiapason.dto;
 
-import comboDev.arsdiapason.mybatis.model.Bambino;
-import comboDev.arsdiapason.mybatis.model.ProvaScheda;
-import comboDev.arsdiapason.mybatis.model.RelBambinoScheda;
-import comboDev.arsdiapason.mybatis.model.Scheda;
+import comboDev.arsdiapason.model.Bambino;
+import comboDev.arsdiapason.model.ProvaScheda;
+import comboDev.arsdiapason.model.RelBambinoScheda;
+import comboDev.arsdiapason.model.Scheda;
 import lombok.Data;
 
 import java.util.List;

@@ -6,7 +6,7 @@ import lombok.Data;
 public class DatiUtente {
     private String email;
     private String password;
-    private int temporaryCode;
+    private Integer temporaryCode;
     private String nome;
     private String cognome;
     private String appUrl;

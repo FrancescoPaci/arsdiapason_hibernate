@@ -4,8 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 !**/src/main/resources/static
-src/main/java/comboDev/arsdiapason/mybatis/mapper
-src/main/java/comboDev/arsdiapason/mybatis/model
+src/main/java/comboDev/arsdiapason/mybatis2/mapper
+src/main/java/comboDev/arsdiapason/mybatis2/model
 src/main/resources/static
 
 ### STS ###

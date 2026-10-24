@@ -1,7 +1,7 @@
 package comboDev.arsdiapason.dto;
 
-import comboDev.arsdiapason.mybatis.model.AreaProva;
-import comboDev.arsdiapason.mybatis.model.ProvaScheda;
+import comboDev.arsdiapason.model.AreaProva;
+import comboDev.arsdiapason.model.ProvaScheda;
 import lombok.Data;
 
 import java.util.List;

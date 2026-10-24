@@ -1,15 +1,16 @@
 package comboDev.arsdiapason.service;
 
 import comboDev.arsdiapason.dto.DatiUtente;
-import comboDev.arsdiapason.mybatis.mapper.PsicologoMapper;
-import comboDev.arsdiapason.mybatis.mapper.UtenteMapper;
-import comboDev.arsdiapason.mybatis.model.Psicologo;
-import comboDev.arsdiapason.mybatis.model.Utente;
+import comboDev.arsdiapason.model.Psicologo;
+import comboDev.arsdiapason.model.Utente;
+import comboDev.arsdiapason.repository.PsicologoRepository;
+import comboDev.arsdiapason.repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,22 +19,28 @@ import java.util.regex.Pattern;
 public class UserService {
 
     @Autowired
-    private UtenteMapper utenteMapper;
+    private UtenteRepository utenteRepository;
     @Autowired
-    private PsicologoMapper psicologoMapper;
+    private PsicologoRepository psicologoRepository;
     @Autowired
     private MailService mailService;
 
     @Transactional(readOnly = true)
     public Utente login(String email, String password) throws Exception {
-        Utente utente = utenteMapper.selectByPrimaryKey(email);
-        if (BCrypt.checkpw(password, utente.getPassword())) {
-            if (Boolean.FALSE.equals(utente.getActive())) {
-                throw new Exception("", new Throwable("Utente non attivo, controllare la mail per completare la registrazione"));
+        Optional<Utente> utenteOpt = utenteRepository.findById(email);
+
+        if (utenteOpt.isPresent()) {
+            Utente utente = utenteOpt.get();
+            if (BCrypt.checkpw(password, utente.getPassword())) {
+                if (Boolean.FALSE.equals(utente.getActive())) {
+                    throw new Exception("", new Throwable("Utente non attivo, controllare la mail per completare la registrazione"));
+                }
+                return utente;
+            } else {
+                throw new Exception("", new Throwable("Password non corretta"));
             }
-            return utente;
         } else {
-            throw new Exception("", new Throwable("Password non corretta"));
+            throw new Exception("", new Throwable("Utente non trovato"));
         }
     }
 
@@ -42,61 +49,81 @@ public class UserService {
         Pattern pattern = Pattern.compile(regexPassword);
         Matcher matcher = pattern.matcher(datiUtente.getPassword());
         int temporaryCode = ThreadLocalRandom.current().nextInt(100000, 1000000);
+
         if (matcher.find()) {
+            // 1. Crea e salva lo psicologo (JPA popolerà automaticamente l'ID autoincrementante)
             Psicologo psicologo = new Psicologo();
             psicologo.setNome(datiUtente.getNome());
             psicologo.setCognome(datiUtente.getCognome());
-            psicologoMapper.insert(psicologo);
+            psicologo = psicologoRepository.save(psicologo);
+
+            // 2. Crea e salva l'utente collegato
             Utente utente = new Utente();
             utente.setTemporaryCode(temporaryCode);
             utente.setIdPsicologo(psicologo.getId());
             utente.setEmail(datiUtente.getEmail());
             utente.setPassword(BCrypt.hashpw(datiUtente.getPassword(), BCrypt.gensalt()));
             utente.setRole("PSICOLOGO");
-            utente.setActive(true);//questo per farlo funzionare anche senza mail
-            utenteMapper.insertSelective(utente);
+            utente.setActive(true); // Questo per farlo funzionare anche senza mail
+
+            utenteRepository.save(utente);
         } else {
             throw new Exception("", new Throwable("La password non rispetta i requisiti richiesti"));
         }
         //mailService.sendAuthenticationEmail(datiUtente, temporaryCode);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Utente confirmAccount(DatiUtente confirmAccount) throws Exception {
-        Utente utente = utenteMapper.selectByPrimaryKey(confirmAccount.getEmail());
+        Optional<Utente> utenteOpt = utenteRepository.findById(confirmAccount.getEmail());
+
+        if (utenteOpt.isEmpty()) {
+            throw new Exception("", new Throwable("Utente non trovato"));
+        }
+
+        Utente utente = utenteOpt.get();
         if (!BCrypt.checkpw(confirmAccount.getPassword(), utente.getPassword())
-                || confirmAccount.getTemporaryCode() != utente.getTemporaryCode()) {
+                || confirmAccount.getTemporaryCode() == null
+                || !confirmAccount.getTemporaryCode().equals(utente.getTemporaryCode())) {
             throw new Exception("", new Throwable("Dati non corretti"));
         }
+
         utente.setActive(true);
         utente.setTemporaryCode(null);
-        utenteMapper.updateByPrimaryKey(utente);
-        return utente;
+        return utenteRepository.save(utente);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void sendResetPasswordEmail(DatiUtente datiUtente) throws Exception {
-        Utente utente = utenteMapper.selectByPrimaryKey(datiUtente.getEmail());
-        if (utente != null) {
+        Optional<Utente> utenteOpt = utenteRepository.findById(datiUtente.getEmail());
+
+        if (utenteOpt.isPresent()) {
+            Utente utente = utenteOpt.get();
             if (Boolean.FALSE.equals(utente.getActive())) {
                 throw new Exception("", new Throwable("Utente non attivo, controllare la mail per attivare l'utenza"));
             }
             int temporaryCode = ThreadLocalRandom.current().nextInt(100000, 1000000);
             utente.setTemporaryCode(temporaryCode);
-            utenteMapper.updateByPrimaryKey(utente);
+            utenteRepository.save(utente);
             mailService.sendResetPasswordEmail(datiUtente, temporaryCode);
         } else {
             throw new Exception("", new Throwable("Mail non presente a sistema, è necessario registrarsi"));
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void resetPassword(DatiUtente datiUtente) throws Exception {
-        Utente utente = utenteMapper.selectByPrimaryKey(datiUtente.getEmail());
-        if (utente == null || datiUtente.getTemporaryCode() != utente.getTemporaryCode()) {
+        Optional<Utente> utenteOpt = utenteRepository.findById(datiUtente.getEmail());
+
+        if (utenteOpt.isEmpty() || datiUtente.getTemporaryCode() == null
+                || !datiUtente.getTemporaryCode().equals(utenteOpt.get().getTemporaryCode())) {
             throw new Exception("", new Throwable("Dati non corretti"));
         }
+
+        Utente utente = utenteOpt.get();
         utente.setActive(true);
         utente.setPassword(BCrypt.hashpw(datiUtente.getPassword(), BCrypt.gensalt()));
         utente.setTemporaryCode(null);
-        utenteMapper.updateByPrimaryKey(utente);
+        utenteRepository.save(utente);
     }
-
 }

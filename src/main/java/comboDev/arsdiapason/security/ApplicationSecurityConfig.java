@@ -1,55 +1,79 @@
 package comboDev.arsdiapason.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ApplicationSecurityConfig {
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/login").authenticated()
-                .and()
-                .authorizeRequests()
-                .anyRequest().hasAuthority("PSICOLOGO")
-                .and()
-                .httpBasic().authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint())
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+
+    public ApplicationSecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
+    }
+
+    // 1. L'equivalente esatto del tuo vecchio web.ignoring()
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/",
+                "/*.js",
+                "/favicon.ico",
+                "/api/getRegex",
+                "/api/createAccount",
+                "/api/confirmAccount",
+                "/api/sendResetPasswordEmail",
+                "/api/resetPassword"
+        );
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Permette sempre i preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Rotta di login (Richiede autenticazione Basic)
+                        .requestMatchers("/api/login").authenticated()
+
+                        // Tutto il resto richiede l'autorità PSICOLOGO
+                        .anyRequest().hasAuthority("PSICOLOGO")
+                )
+                .httpBasic(basic -> basic
+                        .authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint())
+                )
+                .authenticationProvider(customAuthenticationProvider);
+
+        return http.build();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
-    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/");
-        web.ignoring().antMatchers("/*.js");
-        web.ignoring().antMatchers("/favicon.ico");
-        web.ignoring().antMatchers("/api/getRegex");
-        web.ignoring().antMatchers("/api/createAccount");
-        web.ignoring().antMatchers("/api/confirmAccount");
-        web.ignoring().antMatchers("/api/sendResetPasswordEmail");
-        web.ignoring().antMatchers("/api/resetPassword");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
-
 }

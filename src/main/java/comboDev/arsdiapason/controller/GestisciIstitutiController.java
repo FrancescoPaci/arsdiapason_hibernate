@@ -1,6 +1,6 @@
 package comboDev.arsdiapason.controller;
 
-import comboDev.arsdiapason.mybatis.model.Istituto;
+import comboDev.arsdiapason.model.Istituto;
 import comboDev.arsdiapason.service.GestisciIstitutiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class GestisciIstitutiController implements BasicController  {
+public class GestisciIstitutiController implements BasicController {
 
     @Autowired
     private GestisciIstitutiService gestisciIstitutiService;

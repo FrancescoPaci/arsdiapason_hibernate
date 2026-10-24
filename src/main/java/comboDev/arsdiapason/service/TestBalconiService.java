@@ -2,56 +2,61 @@ package comboDev.arsdiapason.service;
 
 import comboDev.arsdiapason.dto.DatiSchede;
 import comboDev.arsdiapason.dto.TestBalconi;
-import comboDev.arsdiapason.mybatis.mapper.BambinoMapper;
-import comboDev.arsdiapason.mybatis.mapper.ProvaSchedaMapper;
-import comboDev.arsdiapason.mybatis.mapper.RelBambinoSchedaMapper;
-import comboDev.arsdiapason.mybatis.mapper.SchedaMapper;
-import comboDev.arsdiapason.mybatis.model.Bambino;
-import comboDev.arsdiapason.mybatis.model.RelBambinoScheda;
-import comboDev.arsdiapason.mybatis.model.RelBambinoSchedaExample;
+import comboDev.arsdiapason.model.Bambino;
+import comboDev.arsdiapason.model.RelBambinoScheda;
+import comboDev.arsdiapason.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class TestBalconiService {
 
     @Autowired
-    private BambinoMapper bambinoMapper;
+    private BambinoRepository bambinoRepository;
     @Autowired
-    private SchedaMapper schedaMapper;
+    private SchedaRepository schedaRepository;
     @Autowired
-    private ProvaSchedaMapper provaSchedaMapper;
+    private ProvaSchedaRepository provaSchedaRepository;
     @Autowired
-    private RelBambinoSchedaMapper relBambinoSchedaMapper;
+    private RelBambinoSchedaRepository relBambinoSchedaRepository;
 
     @Transactional(readOnly = true)
     public DatiSchede getDatiSchede(Integer idBambino) {
         DatiSchede datiSchede = new DatiSchede();
-        if(idBambino != null) {
-            datiSchede.setBambino(bambinoMapper.selectByPrimaryKey(idBambino));
-            RelBambinoSchedaExample relBambinoSchedaExample = new RelBambinoSchedaExample();
-            relBambinoSchedaExample.createCriteria().andIdBambinoEqualTo(idBambino);
-            datiSchede.setRelBambinoSchede(relBambinoSchedaMapper.selectByExample(relBambinoSchedaExample));
+
+        if (idBambino != null) {
+            Optional<Bambino> bambinoOpt = bambinoRepository.findById(idBambino);
+            bambinoOpt.ifPresent(datiSchede::setBambino);
+
+            // Sfrutta il nuovo metodo nel repository JPA
+            datiSchede.setRelBambinoSchede(relBambinoSchedaRepository.findByIdBambino(idBambino));
         }
-        datiSchede.setSchede(schedaMapper.selectByExample(null));
-        datiSchede.setProveSchede(provaSchedaMapper.selectByExample(null));
+
+        // findAll() sostituisce selectByExample(null) di MyBatis
+        datiSchede.setSchede(schedaRepository.findAll());
+        datiSchede.setProveSchede(provaSchedaRepository.findAll());
+
         return datiSchede;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void saveTest(TestBalconi testBalconi) {
-        for (Byte idProvaScheda: testBalconi.getIdsProvaSceda()) {
+        // 1. Salva le relazioni tra il bambino e le prove scelte
+        for (Byte idProvaScheda : testBalconi.getIdsProvaSceda()) {
             RelBambinoScheda relBambinoScheda = new RelBambinoScheda();
             relBambinoScheda.setIdBambino(testBalconi.getBambino().getId());
             relBambinoScheda.setIdProvaScheda(idProvaScheda);
-            relBambinoSchedaMapper.insertSelective(relBambinoScheda);
+            relBambinoSchedaRepository.save(relBambinoScheda);
         }
-        Bambino bambino = testBalconi.getBambino();
-        bambino.setDataTest(testBalconi.getBambino().getDataTest());
-        bambino.setId(testBalconi.getBambino().getId());
-        bambino.setTestFinito(true);
-        bambinoMapper.updateByPrimaryKey(bambino);
-    }
 
+        // 2. Aggiorna lo stato del bambino (test finito e data del test)
+        Bambino bambino = testBalconi.getBambino();
+        bambino.setTestFinito(true);
+
+        // save() in JPA aggiorna il record esistente se l'ID è presente
+        bambinoRepository.save(bambino);
+    }
 }

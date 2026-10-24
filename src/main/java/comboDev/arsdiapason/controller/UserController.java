@@ -1,9 +1,9 @@
 package comboDev.arsdiapason.controller;
 
 import comboDev.arsdiapason.dto.DatiUtente;
-import comboDev.arsdiapason.mybatis.mapper.PsicologoMapper;
-import comboDev.arsdiapason.mybatis.model.Psicologo;
-import comboDev.arsdiapason.mybatis.model.Utente;
+import comboDev.arsdiapason.model.Psicologo;
+import comboDev.arsdiapason.model.Utente;
+import comboDev.arsdiapason.repository.PsicologoRepository;
 import comboDev.arsdiapason.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,16 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-public class UserController implements BasicController  {
+public class UserController implements BasicController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private PsicologoMapper psicologoMapper;
 
-    private final String regexEmail = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+    @Autowired
+    private PsicologoRepository psicologoRepository;
+
+    private final String regexEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     private final String regexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!=%*?^&+#])[A-Za-z0-9@$!=%*?^&+#]{8,20}$";
 
     @GetMapping("/getRegex")
@@ -36,7 +38,9 @@ public class UserController implements BasicController  {
 
     @GetMapping("/login")
     public Psicologo login(Authentication authentication) {
-        return psicologoMapper.selectByPrimaryKey((Integer) authentication.getDetails());
+        Integer idPsicologo = (Integer) authentication.getDetails();
+        Optional<Psicologo> psicologoOpt = psicologoRepository.findById(idPsicologo);
+        return psicologoOpt.orElse(null);
     }
 
     @PostMapping("/createAccount")
@@ -58,5 +62,4 @@ public class UserController implements BasicController  {
     public void resetPassword(@RequestBody DatiUtente datiUtente) throws Exception {
         userService.resetPassword(datiUtente);
     }
-
 }

@@ -18,11 +18,7 @@ public class MailService {
 
     public void sendAuthenticationEmail(DatiUtente datiUtente, int temporaryCode) {
         String email;
-        try {
-            email = URLEncoder.encode(datiUtente.getEmail(), StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e.getCause());
-        }
+        email = URLEncoder.encode(datiUtente.getEmail(), StandardCharsets.UTF_8);
         String link = datiUtente.getAppUrl() + "/#/confirmAccount/" + email + "/" + temporaryCode;
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(datiUtente.getEmail());
@@ -33,11 +29,7 @@ public class MailService {
 
     public void sendResetPasswordEmail(DatiUtente datiUtente, int temporaryCode) {
         String email;
-        try {
-            email = URLEncoder.encode(datiUtente.getEmail(), StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e.getCause());
-        }
+        email = URLEncoder.encode(datiUtente.getEmail(), StandardCharsets.UTF_8);
         String link = datiUtente.getAppUrl() + "/#/resetPassword/" + email + "/" + temporaryCode;
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(datiUtente.getEmail());

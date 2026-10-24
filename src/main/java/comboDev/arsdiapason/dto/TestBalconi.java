@@ -1,6 +1,6 @@
 package comboDev.arsdiapason.dto;
 
-import comboDev.arsdiapason.mybatis.model.Bambino;
+import comboDev.arsdiapason.model.Bambino;
 import lombok.Data;
 
 import java.util.List;
