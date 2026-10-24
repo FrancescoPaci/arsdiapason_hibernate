@@ -1,0 +1,156 @@
+<div class="row" *ngIf="!istituti.length">
+  <div class="col-6">
+    <div class="alert alert-info">
+      <strong>Non è possibile inserire un nuovo bambino in quanto non è presente nessun istituto al quale collegarlo. E'
+        possibile censire un nuovo istituto dala pagina
+        <a [routerLink]="['/gestisciIstituto']" routerLinkActive="active">Gestione Istituti</a>
+      </strong>
+    </div>
+  </div>
+</div>
+
+<form name="form" (ngSubmit)="f.form.valid && insertChild()" #f="ngForm" novalidate>
+
+  <div class="row mb-3 align-items-end">
+    <div class="col-2">
+      <label>Istituto</label>
+      <select [(ngModel)]="newChild.idIstituto" (ngModelChange)="findInstitutoDetails()" [disabled]="!istituti.length"
+        name="istituto" class="custom-select custom-select-sm" required>
+        <option *ngFor="let x of istituti" value="{{x.id}}">{{x.nome}}</option>
+      </select>
+    </div>
+    <div class="col-1">
+      <label>Classe</label>
+      <input [(ngModel)]="newChild.classe" [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="classe"
+             type="text" class="form-control form-control-sm" required
+             tooltip="E' possibile inserire una nuova Sezione oppure sceglierne una dalla lista a fianco se presente" />
+    </div>
+    <div class="col-1">
+      <select [(ngModel)]="newChild.classe" class="custom-select custom-select-sm" required
+              [disabled]="!newChild.idIstituto || newChild.idIstituto == 1 || !classi.length" name="classeSelect">
+        <option *ngFor="let x of classi" value="{{x}}">{{x}}</option>
+      </select>
+    </div>
+    <div class="col-1">
+      <label>Sezione</label>
+      <input [(ngModel)]="newChild.sezione" [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="sezione"
+        type="text" class="form-control form-control-sm" required
+        tooltip="E' possibile inserire una nuova Sezione oppure sceglierne una dalla lista a fianco se presente" />
+    </div>
+    <div class="col-1">
+      <select [(ngModel)]="newChild.sezione" class="custom-select custom-select-sm" required
+        [disabled]="!newChild.idIstituto || newChild.idIstituto == 1 || !sezioni.length" name="sezioneSelect">
+        <option *ngFor="let x of sezioni" value="{{x}}">{{x}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-2">
+      <label>Nome</label>
+      <input type="text" class="form-control form-control-sm" name="nome" [(ngModel)]="newChild.nome"
+        [disabled]="!newChild.idIstituto" required />
+    </div>
+    <div class="col-2">
+      <label>Cognome</label>
+      <input type="text" class="form-control form-control-sm" name="cognome" [(ngModel)]="newChild.cognome"
+        [disabled]="!newChild.idIstituto" required />
+    </div>
+    <div class="col-2">
+      <label>Sesso</label>
+      <select class="custom-select custom-select-sm" name="sesso" [(ngModel)]="newChild.sesso"
+        [disabled]="!newChild.idIstituto" required>
+        <option *ngFor="let x of sexList" value="{{x.db}}">{{x.label}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-2">
+      <label>Data di Nascita</label>
+      <input type="date" class="form-control form-control-sm" name="dataNascita" [(ngModel)]="newChild.dataNascita"
+        [disabled]="!newChild.idIstituto" max="{{today}}" required />
+    </div>
+    <div class="col-2">
+      <label>Comune di Nascita</label>
+      <input type="text" class="form-control form-control-sm" name="comuneNascita" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.comuneNascita" />
+    </div>
+    <div class="col-2">
+      <label>Comune di Residenza</label>
+      <input type="text" class="form-control form-control-sm" name="comuneResidenza" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.comuneResidenza" />
+    </div>
+    <div class="col-2">
+      <label>Indirizzo di Residenza</label>
+      <input type="text" class="form-control form-control-sm" name="indirizzoResidenza"
+        [disabled]="!newChild.idIstituto" [(ngModel)]="newChild.indirizzoResidenza" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-2">
+      <label>Figlio Adottivo</label>
+      <select class="custom-select custom-select-sm" name="figlioAdottivo" [(ngModel)]="newChild.figlioAdottivo"
+        [disabled]="!newChild.idIstituto">
+        <option *ngFor="let x of siNo">{{x}}</option>
+      </select>
+    </div>
+    <div class="col-2">
+      <label>Ordine Genitura</label>
+      <input type="number" class="form-control form-control-sm" name="ordineGenitura" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.ordineGenitura" min="1" />
+    </div>
+    <div class="col-2">
+      <label>Numero Fratelli</label>
+      <input type="number" class="form-control form-control-sm" name="numeroFratelli" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.numeroFratelli" min="0" />
+    </div>
+    <div class="col-2">
+      <label>Numero Sorelle</label>
+      <input type="number" class="form-control form-control-sm" name="numeroSorelle" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.numeroSorelle" min="0" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-2">
+      <label>Lavoro Padre</label>
+      <input type="text" class="form-control form-control-sm" name="lavoroPadre" [(ngModel)]="newChild.lavoroPadre"
+        [disabled]="!newChild.idIstituto" />
+    </div>
+    <div class="col-2">
+      <label>Lavoro Madre</label>
+      <input type="text" class="form-control form-control-sm" name="lavoroMadre" [(ngModel)]="newChild.lavoroMadre"
+        [disabled]="!newChild.idIstituto" />
+    </div>
+    <div class="col-2">
+      <label>Titolo di Studio Padre</label>
+      <input type="text" class="form-control form-control-sm" name="titoloStudioPadre" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.titoloStudioPadre" />
+    </div>
+    <div class="col-2">
+      <label>Titolo di Studio Madre</label>
+      <input type="text" class="form-control form-control-sm" name="titoloStudioMadre" [disabled]="!newChild.idIstituto"
+        [(ngModel)]="newChild.titoloStudioMadre" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-8">
+      <label>Note</label><span> - caratteri rimanenti: {{textAreaMaxLength - (newChild.note.length)}}</span>
+      <textarea [(ngModel)]="newChild.note" name="note" class="form-control form-control-sm" rows="2"
+        maxlength="{{textAreaMaxLength}}" [disabled]="!newChild.idIstituto"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-2">
+      <button class="btn btn-primary mr-5" type="submit" [disabled]="f.form.invalid">Salva</button>
+    </div>
+    <div class="col-2">
+      <button class="btn btn-primary" (click)="newChild = {note: ''}">Svuota campi</button>
+    </div>
+  </div>
+
+</form>

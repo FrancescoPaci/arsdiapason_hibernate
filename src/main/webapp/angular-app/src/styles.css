@@ -1,0 +1,19 @@
+.content-box {
+    padding: 10px;
+    margin: 10px
+}
+form input.ng-invalid,
+form select.ng-invalid,
+form textarea.ng-invalid {
+  border: 1px solid green;
+}
+.c-pointer {
+  cursor: pointer;
+}
+.btn-sm {
+  font-size: .800rem !important;
+}
+.second-title {
+  font-size: 1.2em !important;
+  font-weight: 500 !important;
+}

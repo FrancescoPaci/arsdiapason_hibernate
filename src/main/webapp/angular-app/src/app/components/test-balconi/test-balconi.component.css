@@ -1,0 +1,23 @@
+img {
+  border: 2px solid black;
+  width: 100%;
+}
+.points-table {
+  background-color: yellowgreen;
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.points-table th {
+  width: 16%;
+}
+th, td {
+  vertical-align: middle;
+}
+label {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+input.ng-invalid {
+  border: 1px solid red;
+}
