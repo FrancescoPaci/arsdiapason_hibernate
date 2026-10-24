@@ -1,0 +1,6 @@
+# Configurazione del Database H2 su file (con compatibilità MySQL)
+datasource:
+  url: jdbc:h2:file:./data/sito_psiche;MODE=MySQL;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+  driver-class-name: org.h2.Driver
+  username: sa
+  password: ''

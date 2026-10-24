@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: local
+
+  # Configurazione di Liquibase
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  # Configurazione JPA / Hibernate
+  jpa:
+    hibernate:
+      # 'validate' o 'none' obbligatorio con Liquibase: lo schema lo gestisce Liquibase, Hibernate si limita a verificare le Entity
+      ddl-auto: validate
+    show-sql: true
+    open-in-view: false
+
+  # Abilita la H2 Console (accessibile su http://localhost:8080/h2-console)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # Configurazione Mail (lasciata inalterata)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ''
+    password: ''
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          starttls:
+            enable: true
