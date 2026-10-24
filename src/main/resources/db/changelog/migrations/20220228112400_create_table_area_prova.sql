@@ -1,12 +1,15 @@
--- // create new table area_prova
+-- liquibase formatted sql
+
+-- changeset francesco:03-create-and-populate-area-prova
+-- comment: Creazione e popolamento della tabella area_prova
 
 CREATE TABLE area_prova (
-    prova TINYINT(2) NOT NULL,
-    anni TINYINT(2) NOT NULL,
-    testo VARCHAR(85) NOT NULL,
-    data_ins TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY(prova, anni)
+                            prova TINYINT(2) NOT NULL,
+                            anni TINYINT(2) NOT NULL,
+                            testo VARCHAR(85) NOT NULL,
+                            data_ins TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            data_mod TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                            PRIMARY KEY(prova, anni)
 );
 
 INSERT INTO area_prova (prova, anni, testo) VALUES (1, 5, '10 - Percezione e rappresentazione schema corporeo');
@@ -39,6 +42,4 @@ INSERT INTO area_prova (prova, anni, testo) VALUES (6, 6, '1 - Analisi logiche c
 INSERT INTO area_prova (prova, anni, testo) VALUES (6, 7, '1 - Analisi logiche complesse organizzazione percettiva visiva grafica (memoria)');
 INSERT INTO area_prova (prova, anni, testo) VALUES (6, 8, '1 - Analisi logiche complesse organizzazione percettiva visiva grafica (memoria)');
 
--- //@UNDO
-
-DROP TABLE area_prova;
+-- rollback DROP TABLE area_prova;

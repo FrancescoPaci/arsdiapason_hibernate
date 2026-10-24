@@ -1,4 +1,7 @@
--- // add field temporary_code to utente
+-- liquibase formatted sql
+
+-- changeset francesco:06-insert-default-istituto
+-- comment: Inserimento del record predefinito nella tabella istituto
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -7,6 +10,4 @@ VALUES(1, 0, 'Nessuno', 'Nessuna', 'Nessuna', 'Nessuno', 'Nessuno', CURRENT_TIME
 
 SET FOREIGN_KEY_CHECKS=1;
 
--- //@UNDO
-
-DELETE FROM istituto WHERE id = 1;
+-- rollback DELETE FROM istituto WHERE id = 1;

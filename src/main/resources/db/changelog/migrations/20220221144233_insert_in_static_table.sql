@@ -1,4 +1,7 @@
--- // insert in static table
+-- liquibase formatted sql
+
+-- changeset francesco:02-insert-static-data
+-- comment: Inserimento dei dati statici per tabelle scheda e prova_scheda
 
 INSERT INTO scheda (numero, titolo, obbiettivo, immagini) VALUES (1, 'Figura complessa di Rey B', 'Copiare la figura e riprodurla a memoria', 'A');
 INSERT INTO scheda (numero, titolo, obbiettivo, immagini) VALUES (2, 'Quadrato e losanga', 'Copiare le figure', 'A');
@@ -37,9 +40,7 @@ INSERT INTO prova_scheda (id, numero_scheda, tipo, testo, anni, prova) VALUES (2
 INSERT INTO prova_scheda (id, numero_scheda, tipo, testo, anni, prova) VALUES (30, 10, NULL, 'Disegnati 2 elementi mancanti', 5, 1);
 INSERT INTO prova_scheda (id, numero_scheda, tipo, testo, anni, prova) VALUES (31, 11, NULL, 'Piegatura in diagonale corretta', 5, 6);
 
--- //@UNDO
-
-SET FOREIGN_KEY_CHECKS=0;
-DELETE FROM prova_scheda;
-DELETE FROM scheda;
-SET FOREIGN_KEY_CHECKS=1;
+-- rollback SET FOREIGN_KEY_CHECKS=0;
+-- rollback DELETE FROM prova_scheda;
+-- rollback DELETE FROM scheda;
+-- rollback SET FOREIGN_KEY_CHECKS=1;
