@@ -79,6 +79,31 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.28.0</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+                    <url>
+                        jdbc:h2:file:${project.basedir}/data/sito_psiche;MODE=MySQL;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+                    </url>
+                    <username>sa</username>
+                    <password></password>
+                    <driver>org.h2.Driver</driver>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-resources
+                        </phase> <!-- Si attiva durante la compilazione delle risorse, prima della compilazione Java -->
+                        <goals>
+                            <goal>update</goal> <!-- Esegue la migrazione di Liquibase -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
