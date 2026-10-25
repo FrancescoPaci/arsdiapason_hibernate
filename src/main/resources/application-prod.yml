@@ -1,6 +1,6 @@
-# Configurazione del Database H2 su file (con compatibilità MySQL)
-datasource:
-  url: jdbc:mysql://db4free.net:3306/sito_psiche
-  driver-class-name: com.mysql.cj.jdbc.Driver
-  username: sito_psiche_ut
-  password: sito_psiche_psw
+spring:
+  datasource:
+    url: jdbc:mysql://db4free.net:3306/sito_psiche?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: sito_psiche_ut
+    password: sito_psiche_psw
