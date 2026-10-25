@@ -18,7 +18,7 @@ export class InsertChildComponent implements OnInit {
     }
 
     newChild: any = {note: ''}
-    siNo: any = ['No', 'Si']
+    siNo: any = [{ label: 'Si', db: true }, { label: 'No', db: false }]
     sexList: any = [{ label: 'Maschio', db: 'M' }, { label: 'Femmina', db: 'F' }]
     today: string = moment().format('YYYY-MM-DD')
     istituti: any = []
@@ -48,7 +48,7 @@ export class InsertChildComponent implements OnInit {
     }
 
     findInstitutoDetails() {
-        if (this.newChild.idIstituto && this.newChild.idIstituto != 1) {
+        if (this.newChild.idIstituto && this.newChild.idIstituto > 1) {
             let url = 'findInstitutoDetails?idIstituto=' + this.newChild.idIstituto
             this.httpService.callPost(url, null).subscribe(
                 (data: any) => {

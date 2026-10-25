@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static comboDev.arsdiapason.dto.BambinoDto.toEntity;
+
 @Service
 public class InsertChildService {
 
@@ -41,40 +43,24 @@ public class InsertChildService {
     @Transactional(rollbackFor = Exception.class)
     public void insertChild(BambinoDto bambinoDto, Integer idPsicologo) {
 
-        // 1. Mappa il DTO nell'Entity Bambino (presumendo che il tuo BambinoDto abbia un metodo toEntity o che tu lo mappi manualmente)
-        Bambino bambino = new Bambino();
-        bambino.setNome(bambinoDto.getNome());
-        bambino.setCognome(bambinoDto.getCognome());
-        bambino.setSesso(bambinoDto.getSesso());
-        bambino.setDataNascita(bambinoDto.getDataNascita());
-        bambino.setComuneNascita(bambinoDto.getComuneNascita());
-        bambino.setComuneResidenza(bambinoDto.getComuneResidenza());
-        bambino.setIndirizzoResidenza(bambinoDto.getIndirizzoResidenza());
-        bambino.setNumeroFratelli(bambinoDto.getNumeroFratelli());
-        bambino.setNumeroSorelle(bambinoDto.getNumeroSorelle());
-        bambino.setOrdineGenitura(bambinoDto.getOrdineGenitura());
-        bambino.setLavoroPadre(bambinoDto.getLavoroPadre());
-        bambino.setLavoroMadre(bambinoDto.getLavoroMadre());
-        bambino.setTitoloStudioPadre(bambinoDto.getTitoloStudioPadre());
-        bambino.setTitoloStudioMadre(bambinoDto.getTitoloStudioMadre());
-        bambino.setFiglioAdottivo(bambinoDto.getFiglioAdottivo());
-        bambino.setNote(bambinoDto.getNote());
+        Bambino bambino = bambinoRepository.save(toEntity(bambinoDto));
 
-        // Salva il bambino: JPA popolerà automaticamente l'ID autoincrementante sull'oggetto salvato
-        bambino = bambinoRepository.save(bambino);
-
-        // 2. Salva la relazione con lo psicologo
         RelPsicologoBambino relPsicologoBambino = new RelPsicologoBambino();
         relPsicologoBambino.setIdBambino(bambino.getId());
         relPsicologoBambino.setIdPsicologo(idPsicologo);
         relPsicologoBambinoRepository.save(relPsicologoBambino);
 
-        // 3. Salva la relazione con l'istituto
         RelIstitutoBambino relIstitutoBambino = new RelIstitutoBambino();
         relIstitutoBambino.setIdBambino(bambino.getId());
         relIstitutoBambino.setIdIstituto(bambinoDto.getIdIstituto());
-        relIstitutoBambino.setClasse(bambinoDto.getClasse());
-        relIstitutoBambino.setSezione(bambinoDto.getSezione().toUpperCase());
+
+        if (bambinoDto.getIdIstituto().equals(1)) {
+            relIstitutoBambino.setClasse(0);
+            relIstitutoBambino.setSezione("");
+        } else {
+            relIstitutoBambino.setClasse(bambinoDto.getClasse());
+            relIstitutoBambino.setSezione(bambinoDto.getSezione());
+        }
         relIstitutoBambinoRepository.save(relIstitutoBambino);
     }
 }

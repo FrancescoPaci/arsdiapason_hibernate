@@ -93,7 +93,7 @@
       <label>Figlio Adottivo</label>
       <select class="custom-select custom-select-sm" name="figlioAdottivo" [(ngModel)]="newChild.figlioAdottivo"
         [disabled]="!newChild.idIstituto">
-        <option *ngFor="let x of siNo">{{x}}</option>
+        <option *ngFor="let x of siNo" value="{{x.db}}">{{x.label}}</option>
       </select>
     </div>
     <div class="col-2">

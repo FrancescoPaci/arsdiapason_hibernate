@@ -50,18 +50,16 @@ public class ChildListService {
                         .filter(rib -> rib.getIdBambino().equals(bambino.getId()))
                         .toList();
 
-                if (!relIstitutoBambinoList.isEmpty()) {
-                    RelIstitutoBambino relIB = relIstitutoBambinoList.get(0);
+                RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
 
-                    // 4. Mappa nel DTO esattamente come facevi prima
-                    BambinoDto bambinoDto = BambinoDto.fromEntity(
-                            bambino,
-                            relIB.getIdIstituto(),
-                            relIB.getClasse(),
-                            relIB.getSezione()
-                    );
-                    bambini.add(bambinoDto);
-                }
+                // 4. Mappa nel DTO esattamente come facevi prima
+                BambinoDto bambinoDto = BambinoDto.fromEntity(
+                        bambino,
+                        relIB.getIdIstituto(),
+                        relIB.getClasse(),
+                        relIB.getSezione()
+                );
+                bambini.add(bambinoDto);
             }
         }
         return bambini;

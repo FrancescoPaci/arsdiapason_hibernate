@@ -22,4 +22,11 @@ public class BambinoDto extends Bambino {
         return dto;
     }
 
+    public static Bambino toEntity(BambinoDto bambinoDto) {
+        if (bambinoDto == null) return null;
+        Bambino bambino = new Bambino();
+        BeanUtils.copyProperties(bambinoDto, bambino);
+        return bambino;
+    }
+
 }
