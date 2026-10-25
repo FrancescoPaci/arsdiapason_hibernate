@@ -1,12 +1,15 @@
 package comboDev.arsdiapason.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -40,22 +43,50 @@ public class ApplicationSecurityConfig {
         );
     }
 
+    @Autowired
+    private Environment environment;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        boolean isLocal = environment.acceptsProfiles(Profiles.of("local"));
+
         http
+                // 1. Disabilita il CSRF (e ignora H2 solo se siamo in local)
+                .csrf(csrf -> {
+                    if (isLocal) {
+                        csrf.ignoringRequestMatchers("/h2-console/**");
+                    }
+                    csrf.disable();
+                })
+                // 2. Permetti a H2 di caricare i suoi frame (attivo solo in local)
+                .headers(headers -> {
+                    if (isLocal) {
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
+                    }
+                })
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // Permette sempre i preflight CORS
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Rotta di login (Richiede autenticazione Basic)
-                        .requestMatchers("/api/login").authenticated()
-
-                        // Tutto il resto richiede l'autorità PSICOLOGO
-                        .anyRequest().hasAuthority("PSICOLOGO")
+                // 3. Gestione sessioni (IF_REQUIRED per supportare sia la console H2 che l'autenticazione Basic)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
+                // 4. Regole di autorizzazione
+                .authorizeHttpRequests(auth -> {
+                    // Permette sempre i preflight CORS
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
+                    // Rotta di login
+                    auth.requestMatchers("/api/login").authenticated();
+
+                    // H2 Console accessibile senza filtri SOLO in ambiente local
+                    if (isLocal) {
+                        auth.requestMatchers("/h2-console/**").permitAll();
+                    }
+
+                    // Tutto il resto richiede l'autorità PSICOLOGO
+                    auth.anyRequest().hasAuthority("PSICOLOGO");
+                })
                 .httpBasic(basic -> basic
                         .authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint())
                 )
