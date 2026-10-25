@@ -40,17 +40,6 @@ CREATE TABLE istituto
     PRIMARY KEY (id)
 );
 
-CREATE TABLE rel_psicologo_istituto
-(
-    id_psicologo INT       NOT NULL,
-    id_istituto  INT       NOT NULL,
-    data_ins     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_psicologo, id_istituto),
-    CONSTRAINT FK_RPI_psicologo FOREIGN KEY (id_psicologo) REFERENCES psicologo (id),
-    CONSTRAINT FK_RPI_bambino FOREIGN KEY (id_istituto) REFERENCES istituto (id)
-);
-
 CREATE TABLE bambino
 (
     id                  INT AUTO_INCREMENT,

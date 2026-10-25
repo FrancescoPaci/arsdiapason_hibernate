@@ -27,11 +27,15 @@ export class GestisciIstitutiComponent implements OnInit {
   getListaIstituti() {
     this.httpService.callPost('getListaIstituti', null).subscribe(
       (data: any) => {
-        this.istituti = _.filter(data, function (o) { return o.id !== 1 })
+        this.istituti = _.filter(data, function (o) {
+          return o.id !== 1
+        })
         this.createIstitutiForm()
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 
@@ -41,8 +45,10 @@ export class GestisciIstitutiComponent implements OnInit {
       (data: any) => {
         this.istituti[index] = data
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 
@@ -52,8 +58,10 @@ export class GestisciIstitutiComponent implements OnInit {
       (data: any) => {
         this.istituti.splice(index, 1)
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 
@@ -61,7 +69,6 @@ export class GestisciIstitutiComponent implements OnInit {
     this.istitutiForm.controls.istitutiRows = this.formBuilder.array(
       this.istituti.map(x => this.formBuilder.group({
         id: [x.id],
-        idPsicologo: [x.idPsicologo, [Validators.required]],
         nome: [x.nome, [Validators.required]],
         regione: [x.regione, [Validators.required]],
         provincia: [x.provincia, [Validators.required]],
@@ -77,7 +84,6 @@ export class GestisciIstitutiComponent implements OnInit {
         this.istituti.push(data)
         this.istitutiForm.controls.istitutiRows.push(this.formBuilder.group({
           id: [data.id],
-          idPsicologo: [data.idPsicologo, [Validators.required]],
           nome: [data.nome, [Validators.required]],
           regione: [data.regione, [Validators.required]],
           provincia: [data.provincia, [Validators.required]],
@@ -85,8 +91,10 @@ export class GestisciIstitutiComponent implements OnInit {
           indirizzo: [data.indirizzo, [Validators.required]]
         }));
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 
@@ -94,7 +102,6 @@ export class GestisciIstitutiComponent implements OnInit {
     delete this.istituti[index].inModifica
     this.istitutiForm.controls.istitutiRows.controls[index].setValue({
       id: this.istituti[index].id,
-      idPsicologo: this.istituti[index].idPsicologo,
       nome: this.istituti[index].nome,
       regione: this.istituti[index].regione,
       provincia: this.istituti[index].provincia,
