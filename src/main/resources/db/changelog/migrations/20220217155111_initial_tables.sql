@@ -74,8 +74,8 @@ CREATE TABLE rel_istituto_bambino
     sezione     VARCHAR(3) NOT NULL,
     data_ins    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_mod    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_istituto, id_bambino),
-    CONSTRAINT FK_RIB_psicologo FOREIGN KEY (id_istituto) REFERENCES istituto (id),
+    PRIMARY KEY (id_istituto, id_bambino, classe, sezione),
+    CONSTRAINT FK_RIB_istituto FOREIGN KEY (id_istituto) REFERENCES istituto (id),
     CONSTRAINT FK_RIB_bambino FOREIGN KEY (id_bambino) REFERENCES bambino (id)
 );
 

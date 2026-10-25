@@ -8,4 +8,6 @@ import java.io.Serializable;
 public class RelIstitutoBambinoId implements Serializable {
     private Integer idIstituto;
     private Integer idBambino;
+    private Integer classe;
+    private String sezione;
 }

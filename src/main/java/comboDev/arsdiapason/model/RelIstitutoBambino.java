@@ -21,9 +21,11 @@ public class RelIstitutoBambino {
     @Column(name = "id_bambino")
     private Integer idBambino;
 
+    @Id
     @Column(name = "classe", nullable = false)
     private Integer classe;
 
+    @Id
     @Column(name = "sezione", nullable = false, length = 3)
     private String sezione;
 
