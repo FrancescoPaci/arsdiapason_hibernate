@@ -31,6 +31,9 @@ public class Istituto {
     @Column(name = "indirizzo", nullable = false, length = 50)
     private String indirizzo;
 
+    @Column(name = "sezioni", nullable = false, length = 120)
+    private String sezioni;
+
     @CreationTimestamp
     @Column(name = "data_ins", nullable = false, updatable = false)
     private LocalDateTime dataIns;

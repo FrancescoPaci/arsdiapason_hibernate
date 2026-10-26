@@ -73,7 +73,8 @@ export class GestisciIstitutiComponent implements OnInit {
         regione: [x.regione, [Validators.required]],
         provincia: [x.provincia, [Validators.required]],
         comune: [x.comune, [Validators.required]],
-        indirizzo: [x.indirizzo, [Validators.required]]
+        indirizzo: [x.indirizzo, [Validators.required]],
+        sezioni: [x.sezioni, [Validators.required]]
       }))
     )
   }
@@ -88,7 +89,8 @@ export class GestisciIstitutiComponent implements OnInit {
           regione: [data.regione, [Validators.required]],
           provincia: [data.provincia, [Validators.required]],
           comune: [data.comune, [Validators.required]],
-          indirizzo: [data.indirizzo, [Validators.required]]
+          indirizzo: [data.indirizzo, [Validators.required]],
+          sezioni: [data.sezioni, [Validators.required]]
         }));
       },
       (error: any) => {
@@ -106,7 +108,8 @@ export class GestisciIstitutiComponent implements OnInit {
       regione: this.istituti[index].regione,
       provincia: this.istituti[index].provincia,
       comune: this.istituti[index].comune,
-      indirizzo: this.istituti[index].indirizzo
+      indirizzo: this.istituti[index].indirizzo,
+      sezioni: this.istituti[index].sezioni
     })
   }
 

@@ -9,12 +9,12 @@
           <div class="col-6">
             <label>Nome</label>
             <input type="text" class="form-control form-control-sm" name="nome" [(ngModel)]="newIstituto.nome"
-              required />
+                   required/>
           </div>
           <div class="col-6">
             <label>Regione</label>
             <input type="text" class="form-control form-control-sm" name="regione" [(ngModel)]="newIstituto.regione"
-              required />
+                   required/>
           </div>
         </div>
 
@@ -31,13 +31,32 @@
           </div>
         </div>
 
-        <div class="row align-items-end">
+        <div class="row mb-3">
           <div class="col-6">
             <label>Indirizzo</label>
             <input type="text" class="form-control form-control-sm" name="indirizzo" [(ngModel)]="newIstituto.indirizzo"
-              required />
+                   required/>
           </div>
-          <div class="col-6" style="text-align: right">
+          <div class="col-3">
+            <label>Tipo</label>
+            <div>Scuola media</div>
+          </div>
+          <div class="col-3">
+            <label>Classi</label>
+            <div>5</div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <label>Sezioni</label>
+            <input type="text" class="form-control form-control-sm" name="sezioni" [(ngModel)]="newIstituto.sezioni"
+                   placeholder="Inserire le sezioni separate dalla virgola" required/>
+          </div>
+        </div>
+
+        <div class="row align-items-end">
+          <div class="col-12" style="text-align: right">
             <button class="btn btn-primary mr-3" type="submit" [disabled]="f.form.invalid">Salva</button>
             <button class="btn btn-primary" (click)="newIstituto = {}">Svuota Campi</button>
           </div>
@@ -51,49 +70,59 @@
       <div class="text-center second-title mb-1">Lista Istituti Inseriti</div>
       <table class="table table-sm table-striped">
         <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Regione</th>
-            <th>Provincia</th>
-            <th>Comune</th>
-            <th>Indirizzo</th>
-            <th></th>
-          </tr>
+        <tr>
+          <th>Nome</th>
+          <th>Regione</th>
+          <th>Provincia</th>
+          <th>Comune</th>
+          <th>Indirizzo</th>
+          <th>Sezioni</th>
+          <th></th>
+        </tr>
         </thead>
         <tbody formArrayName="istitutiRows">
-          <tr *ngFor="let istituto of istituti; let i = index">
-            <ng-container *ngIf="!istituto.inModifica">
-              <td>{{istituto.nome}}</td>
-              <td>{{istituto.regione}}</td>
-              <td>{{istituto.provincia}}</td>
-              <td>{{istituto.comune}}</td>
-              <td>{{istituto.indirizzo}}</td>
-              <td class="buttons">
-                <button class="btn btn-primary btn-sm" (click)="istituto.inModifica = true" tooltip="Modifica">
-                  <i class="fa fa-pencil"></i>
-                </button>
-                <button class="btn btn-primary btn-sm ml-1" (click)="eliminaIstituto(i)" tooltip="Elimina">
-                  <i class="fa fa-trash-o"></i>
-                </button>
-              </td>
-            </ng-container>
-            <ng-container *ngIf="istituto.inModifica" [formGroupName]="i">
-              <td><input type="text" formControlName="nome" class="form-control form-control-sm"></td>
-              <td><input type="text" formControlName="regione" class="form-control form-control-sm"></td>
-              <td><input type="text" formControlName="provincia" class="form-control form-control-sm"></td>
-              <td><input type="text" formControlName="comune" class="form-control form-control-sm"></td>
-              <td><input type="text" formControlName="indirizzo" class="form-control form-control-sm"></td>
-              <td class="buttons">
-                <button class="btn btn-primary btn-sm" type="submit" (click)="saveModIstituto(i)"
-                  [disabled]="formInvalid(i)" tooltip="Salva">
-                  <i class="fa fa-save"></i>
-                </button>
-                <button class="btn btn-primary btn-sm ml-1" (click)="cancelModIstituto(i)" tooltip="Annulla">
-                  <i class="fa fa-times"></i>
-                </button>
-              </td>
-            </ng-container>
-          </tr>
+        <tr *ngFor="let istituto of istituti; let i = index">
+          <ng-container *ngIf="!istituto.inModifica">
+            <td>{{istituto.nome}}</td>
+            <td>{{istituto.regione}}</td>
+            <td>{{istituto.provincia}}</td>
+            <td>{{istituto.comune}}</td>
+            <td>{{istituto.indirizzo}}</td>
+            <td>
+              <select class="custom-select custom-select-sm">
+                <option *ngFor="let x of istituto.sezioni.split(',')">
+                  {{ x.trim() }}
+                </option>
+              </select>
+            </td>
+
+            <td class="buttons">
+              <button class="btn btn-primary btn-sm" (click)="istituto.inModifica = true" tooltip="Modifica">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button class="btn btn-primary btn-sm ml-1" (click)="eliminaIstituto(i)" tooltip="Elimina">
+                <i class="fa fa-trash-o"></i>
+              </button>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="istituto.inModifica" [formGroupName]="i">
+            <td><input type="text" formControlName="nome" class="form-control form-control-sm"></td>
+            <td><input type="text" formControlName="regione" class="form-control form-control-sm"></td>
+            <td><input type="text" formControlName="provincia" class="form-control form-control-sm"></td>
+            <td><input type="text" formControlName="comune" class="form-control form-control-sm"></td>
+            <td><input type="text" formControlName="indirizzo" class="form-control form-control-sm"></td>
+            <td><input type="text" formControlName="sezioni" class="form-control form-control-sm"></td>
+            <td class="buttons">
+              <button class="btn btn-primary btn-sm" type="submit" (click)="saveModIstituto(i)"
+                      [disabled]="formInvalid(i)" tooltip="Salva">
+                <i class="fa fa-save"></i>
+              </button>
+              <button class="btn btn-primary btn-sm ml-1" (click)="cancelModIstituto(i)" tooltip="Annulla">
+                <i class="fa fa-times"></i>
+              </button>
+            </td>
+          </ng-container>
+        </tr>
         </tbody>
       </table>
     </form>
