@@ -1,7 +1,6 @@
 package comboDev.arsdiapason.service;
 
 import comboDev.arsdiapason.dto.BambinoDto;
-import comboDev.arsdiapason.dto.IstitutoDettagli;
 import comboDev.arsdiapason.model.Bambino;
 import comboDev.arsdiapason.model.RelIstitutoBambino;
 import comboDev.arsdiapason.model.RelPsicologoBambino;
@@ -11,8 +10,6 @@ import comboDev.arsdiapason.repository.RelPsicologoBambinoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static comboDev.arsdiapason.dto.BambinoDto.toEntity;
 
@@ -27,18 +24,6 @@ public class InsertChildService {
 
     @Autowired
     private RelIstitutoBambinoRepository relIstitutoBambinoRepository;
-
-    @Transactional(readOnly = true)
-    public IstitutoDettagli findInstitutoDetails(Integer idIstituto) {
-
-        List<Integer> classi = relIstitutoBambinoRepository.findDistinctClassiByIdIstituto(idIstituto);
-        List<String> sezioni = relIstitutoBambinoRepository.findDistinctSezioniByIdIstituto(idIstituto);
-
-        IstitutoDettagli istitutoDettagli = new IstitutoDettagli();
-        istitutoDettagli.setClassi(classi);
-        istitutoDettagli.setSezioni(sezioni);
-        return istitutoDettagli;
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public void insertChild(BambinoDto bambinoDto, Integer idPsicologo) {

@@ -16,11 +16,6 @@ public class InsertChildController implements BasicController {
     @Autowired
     private InsertChildService insertChildService;
 
-    @PostMapping("/findInstitutoDetails")
-    public IstitutoDettagli findInstitutoDetails(@RequestParam Integer idIstituto) {
-        return insertChildService.findInstitutoDetails(idIstituto);
-    }
-
     @PostMapping("/insertChild")
     public void insertChild(Authentication authentication, @RequestBody BambinoDto bambino) {
         insertChildService.insertChild(bambino, (Integer) authentication.getDetails());

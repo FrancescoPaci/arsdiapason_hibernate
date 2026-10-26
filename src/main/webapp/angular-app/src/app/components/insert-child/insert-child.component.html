@@ -14,30 +14,20 @@
   <div class="row mb-3 align-items-end">
     <div class="col-2">
       <label>Istituto</label>
-      <select [(ngModel)]="newChild.idIstituto" (ngModelChange)="findInstitutoDetails()" [disabled]="!istituti.length"
+      <select [(ngModel)]="newChild.idIstituto" (ngModelChange)="getSezioni($event)" [disabled]="!istituti.length"
         name="istituto" class="custom-select custom-select-sm" required>
         <option *ngFor="let x of istituti" value="{{x.id}}">{{x.nome}}</option>
       </select>
     </div>
     <div class="col-1">
       <label>Classe</label>
-      <input [(ngModel)]="newChild.classe" [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="classe"
-             type="text" class="form-control form-control-sm" required
-             tooltip="E' possibile inserire una nuova Sezione oppure sceglierne una dalla lista a fianco se presente" />
-    </div>
-    <div class="col-1">
       <select [(ngModel)]="newChild.classe" class="custom-select custom-select-sm" required
-              [disabled]="!newChild.idIstituto || newChild.idIstituto == 1 || !classi.length" name="classeSelect">
-        <option *ngFor="let x of classi" value="{{x}}">{{x}}</option>
+              [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="classeSelect">
+        <option *ngFor="let x of [1, 2, 3, 4, 5]" [value]="x">{{ x }}</option>
       </select>
     </div>
     <div class="col-1">
       <label>Sezione</label>
-      <input [(ngModel)]="newChild.sezione" [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="sezione"
-        type="text" class="form-control form-control-sm" required
-        tooltip="E' possibile inserire una nuova Sezione oppure sceglierne una dalla lista a fianco se presente" />
-    </div>
-    <div class="col-1">
       <select [(ngModel)]="newChild.sezione" class="custom-select custom-select-sm" required
         [disabled]="!newChild.idIstituto || newChild.idIstituto == 1 || !sezioni.length" name="sezioneSelect">
         <option *ngFor="let x of sezioni" value="{{x}}">{{x}}</option>
