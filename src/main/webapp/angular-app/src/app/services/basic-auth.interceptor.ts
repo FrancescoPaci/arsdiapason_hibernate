@@ -22,7 +22,7 @@ export class BasicAuthInterceptor implements HttpInterceptor {
             })
         }
         return next.handle(request).pipe(
-            catchError((error: { status: number; error: { cause: string } }) => {
+            catchError((error: { status: number; error: any }) => {
                 if (error.status === 401) {
                     sessionStorage.removeItem('auth')
                     sessionStorage.removeItem('user')
@@ -30,7 +30,7 @@ export class BasicAuthInterceptor implements HttpInterceptor {
                 } else if (error.status === 504) {
                     this.openServerOffModal()
                 } else {
-                    this.openErrorModal(error.error.cause)
+                    this.openErrorModal(error.error)
                 }
                 return next.handle(request)
             }),
@@ -45,10 +45,10 @@ export class BasicAuthInterceptor implements HttpInterceptor {
         return request
     }
 
-    openErrorModal(cause: string) {
+    openErrorModal(error: any) {
         const initialState = {
             title: "Si è verificato un errore",
-            text: cause
+            text: error.cause || error.detail
         }
         this.modalService.show(AlertModalComponent, { initialState })
     }

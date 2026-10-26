@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class InsertChildController implements BasicController  {
+public class InsertChildController implements BasicController {
 
     @Autowired
     private InsertChildService insertChildService;
@@ -24,6 +24,11 @@ public class InsertChildController implements BasicController  {
     @PostMapping("/insertChild")
     public void insertChild(Authentication authentication, @RequestBody BambinoDto bambino) {
         insertChildService.insertChild(bambino, (Integer) authentication.getDetails());
+    }
+
+    @PostMapping("/deleteChild")
+    public void deleteChild(@RequestParam Integer idBambino) {
+        insertChildService.deleteChild(idBambino);
     }
 
 }

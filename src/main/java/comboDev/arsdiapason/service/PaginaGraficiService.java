@@ -2,11 +2,7 @@ package comboDev.arsdiapason.service;
 
 import comboDev.arsdiapason.dto.BambinoDto;
 import comboDev.arsdiapason.dto.ResultChildTest;
-import comboDev.arsdiapason.model.Bambino;
-import comboDev.arsdiapason.model.ProvaScheda;
-import comboDev.arsdiapason.model.RelBambinoScheda;
-import comboDev.arsdiapason.model.RelIstitutoBambino;
-import comboDev.arsdiapason.model.RelPsicologoBambino;
+import comboDev.arsdiapason.model.*;
 import comboDev.arsdiapason.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +52,7 @@ public class PaginaGraficiService {
                         .toList();
 
                 if (!relIstitutoBambinoList.isEmpty()) {
-                    RelIstitutoBambino relIB = relIstitutoBambinoList.get(0);
+                    RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
                     BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
 
                     // 4. Recupera le relazioni delle schede del bambino

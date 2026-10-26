@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RelPsicologoBambinoRepository extends JpaRepository<RelPsicologoBambino, RelPsicologoBambinoId> {
+
+    void deleteByIdBambino(Integer idBambino);
+
 }

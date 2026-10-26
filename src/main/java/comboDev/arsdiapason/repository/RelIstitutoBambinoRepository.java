@@ -17,4 +17,7 @@ public interface RelIstitutoBambinoRepository extends JpaRepository<RelIstitutoB
 
     @Query("SELECT DISTINCT r.sezione FROM RelIstitutoBambino r WHERE r.idIstituto = :idIstituto ORDER BY r.sezione")
     List<String> findDistinctSezioniByIdIstituto(@Param("idIstituto") Integer idIstituto);
+
+    void deleteByIdBambino(Integer idBambino);
+
 }

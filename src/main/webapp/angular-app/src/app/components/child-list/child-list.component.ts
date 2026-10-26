@@ -66,6 +66,16 @@ export class ChildListComponent implements OnInit {
         }
     }
 
+    deleteChild(idBambino: number) {
+        this.httpService.callPost('deleteChild?idBambino=' + idBambino, null).subscribe(
+          (data: any) => {
+            this.childsList()
+          },
+          (error: any) => { },
+          () => { }
+        )
+    }
+
     goToTest(childId: number) {
         this.router.navigate(['testBalconi', childId])
     }

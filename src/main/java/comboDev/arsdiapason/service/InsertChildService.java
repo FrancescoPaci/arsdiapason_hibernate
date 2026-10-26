@@ -30,7 +30,7 @@ public class InsertChildService {
 
     @Transactional(readOnly = true)
     public IstitutoDettagli findInstitutoDetails(Integer idIstituto) {
-        // Sfrutta i repository JPA con query dedicate
+
         List<Integer> classi = relIstitutoBambinoRepository.findDistinctClassiByIdIstituto(idIstituto);
         List<String> sezioni = relIstitutoBambinoRepository.findDistinctSezioniByIdIstituto(idIstituto);
 
@@ -63,4 +63,12 @@ public class InsertChildService {
         }
         relIstitutoBambinoRepository.save(relIstitutoBambino);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteChild(Integer idBambino) {
+        relPsicologoBambinoRepository.deleteByIdBambino(idBambino);
+        relIstitutoBambinoRepository.deleteByIdBambino(idBambino);
+        bambinoRepository.deleteById(idBambino);
+    }
+
 }

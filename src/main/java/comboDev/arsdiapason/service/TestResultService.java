@@ -43,7 +43,7 @@ public class TestResultService {
                 .toList();
 
         if (!relIstitutoBambinoList.isEmpty()) {
-            RelIstitutoBambino relIB = relIstitutoBambinoList.get(0);
+            RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
             BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
             resultChildTest.setBambino(bambinoDto);
         }
