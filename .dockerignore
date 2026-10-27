@@ -1,0 +1,7 @@
+# Escludi tutto il frontend e i file di build inutili per Java
+src/main/webapp/angular-app/node_modules
+src/main/webapp/angular-app/dist
+.git
+target
+*.iml
+.idea

@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --o --proxy-config proxy-config.json",
+    "start:docker": "ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy-config.docker.json --poll 3000",
     "build": "ng build",
     "buildProd": "ng build --prod",
     "postbuild": "npm run deploy",

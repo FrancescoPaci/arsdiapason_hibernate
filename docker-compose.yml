@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+
+  frontend:
+    image: node:14-alpine
+    working_dir: /app/angular-app
+    volumes:
+      - ./src/main/webapp/angular-app:/app/angular-app
+    ports:
+      - "4200:4200"
+    command: >
+      sh -c "if [ ! -d 'node_modules' ]; then npm install --force; fi && npm run start:docker"

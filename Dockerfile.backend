@@ -1,0 +1,24 @@
+# Usa un'immagine ufficiale che contiene sia Java 21 che Maven preinstallato
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+WORKDIR /app
+
+# Copia il pom.xml e scarica le dipendenze (sfrutta la cache di Docker)
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copia il codice sorgente ed esegui il build del pacchetto jar
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+
+# Immagine finale leggera per l'esecuzione (solo JRE, senza strumenti di build)
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Copia il file jar generato dalla fase precedente
+COPY --from=builder /app/target/*.jar app.jar
+
+# Espone la porta di Spring Boot
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
