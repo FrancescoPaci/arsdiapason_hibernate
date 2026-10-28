@@ -30,14 +30,14 @@ CREATE TABLE utente
 CREATE TABLE istituto
 (
     id        INT AUTO_INCREMENT,
-    nome      VARCHAR(50) NOT NULL,
-    regione   VARCHAR(50) NOT NULL,
-    provincia VARCHAR(50) NOT NULL,
-    comune    VARCHAR(50) NOT NULL,
-    indirizzo VARCHAR(50) NOT NULL,
-    sezioni VARCHAR(120) NOT NULL,
-    data_ins  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    nome      VARCHAR(50)  NOT NULL,
+    regione   VARCHAR(50)  NOT NULL,
+    provincia VARCHAR(50)  NOT NULL,
+    comune    VARCHAR(50)  NOT NULL,
+    indirizzo VARCHAR(50)  NOT NULL,
+    sezioni   VARCHAR(120) NOT NULL,
+    data_ins  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_mod  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 

@@ -30,12 +30,8 @@ public class TestBalconiService {
         if (idBambino != null) {
             Optional<Bambino> bambinoOpt = bambinoRepository.findById(idBambino);
             bambinoOpt.ifPresent(datiSchede::setBambino);
-
-            // Sfrutta il nuovo metodo nel repository JPA
             datiSchede.setRelBambinoSchede(relBambinoSchedaRepository.findByIdBambino(idBambino));
         }
-
-        // findAll() sostituisce selectByExample(null) di MyBatis
         datiSchede.setSchede(schedaRepository.findAll());
         datiSchede.setProveSchede(provaSchedaRepository.findAll());
 

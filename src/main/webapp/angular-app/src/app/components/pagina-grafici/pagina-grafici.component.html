@@ -1,4 +1,13 @@
-<div class="row align-items-end mb-2">
+<div [hidden]="provaSchedaList.length" class="row">
+  <div class="col-8">
+    <div class="alert alert-info">
+      <strong>Non risulta presente nessun test per nessun bambino. Per fare il test clicca sul pulsante 'Fai il Test' sulla riga di un bambino dalla pagina
+        <a [routerLink]="['/childList']" routerLinkActive="active">Lista Bambini</a>
+      </strong>
+    </div>
+  </div>
+</div>
+<div *ngIf="provaSchedaList.length" class="row align-items-end mb-2">
   <div *ngFor="let combo of searchCombos" class="col-2">
     <label class="font-weight-bold">{{combo | capitalize}}</label>
     <select class="custom-select custom-select-sm" name="{{combo}}" [(ngModel)]="searchModels[combo]"
