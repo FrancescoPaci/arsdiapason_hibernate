@@ -15,7 +15,8 @@ services:
     working_dir: /app/angular-app
     volumes:
       - ./src/main/webapp/angular-app:/app/angular-app
+      - /app/angular-app/node_modules
     ports:
       - "4200:4200"
     command: >
-      sh -c "if [ ! -d 'node_modules' ]; then npm install --force; fi && npm run start:docker"
+      sh -c "if [ ! -f 'node_modules/.bin/ng' ]; then npm install --force; fi && npm run start:docker"
