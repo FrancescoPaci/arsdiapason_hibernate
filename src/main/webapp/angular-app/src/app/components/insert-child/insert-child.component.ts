@@ -13,10 +13,6 @@ export class InsertChildComponent implements OnInit {
 
     constructor(private httpService: HttpService, private modalService: BsModalService) { }
 
-    ngOnInit(): void {
-        this.getListaIstituti()
-    }
-
     newChild: any = {note: ''}
     siNo: any = [{ label: 'Si', db: true }, { label: 'No', db: false }]
     sexList: any = [{ label: 'Maschio', db: 'M' }, { label: 'Femmina', db: 'F' }]
@@ -25,10 +21,18 @@ export class InsertChildComponent implements OnInit {
     sezioni: any = []
     textAreaMaxLength: number = 300
 
+    ngOnInit(): void {
+        this.getListaIstituti()
+    }
+
     getListaIstituti() {
         this.httpService.callPost('getListaIstituti', null).subscribe(
             (data: any) => {
                 this.istituti = data
+                if (history.state && history.state.data) {
+                  this.newChild = history.state.data
+                  this.getSezioni(history.state.data.idIstituto)
+                }
             },
             (error: any) => { },
             () => { }

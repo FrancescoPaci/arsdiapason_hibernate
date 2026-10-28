@@ -168,4 +168,10 @@ export class ChildListComponent implements OnInit {
       return combo === 'sezione' || combo === 'classe' ? 'col-1' : 'col-2'
     }
 
+    modifyChild(bambino: any) {
+      this.router.navigate(['/insertChild'], {
+        state: { data: bambino }
+      });
+    }
+
 }

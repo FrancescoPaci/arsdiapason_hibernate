@@ -62,16 +62,22 @@
                 <i class="fa fa-file-text-o"></i>
               </button>
             </td>
-            <td style="width: 0">
-              <button (click)="deleteChild(child.id)" class="btn btn-danger btn-sm"
-                      tooltip="Elimina Bambino" placement="left">
-                <i class="fa fa-minus"></i>
-              </button>
-            </td>
             <td style="width: 0" *ngIf="child.testFinito">
               <button (click)="goToTestResult(child.id)" class="btn btn-success btn-sm"
                 tooltip="Risultato del Test" placement="left">
                 <i class="fa fa-file-text-o"></i>
+              </button>
+            </td>
+            <td style="width: 0">
+              <button (click)="modifyChild(child)" class="btn btn-success btn-sm"
+                      tooltip="Modifica Bambino" placement="left">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </td>
+            <td style="width: 0">
+              <button (click)="deleteChild(child.id)" class="btn btn-danger btn-sm"
+                      tooltip="Elimina Bambino" placement="left">
+                <i class="fa fa-trash-o"></i>
               </button>
             </td>
           </tr>
