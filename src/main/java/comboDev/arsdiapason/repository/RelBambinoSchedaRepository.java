@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface RelBambinoSchedaRepository extends JpaRepository<RelBambinoScheda, RelBambinoSchedaId> {
 
-    // Recupera tutte le relazioni scheda associate a uno specifico bambino
     List<RelBambinoScheda> findByIdBambino(Integer idBambino);
+
+    void deleteByIdBambino(Integer idBambino);
 }

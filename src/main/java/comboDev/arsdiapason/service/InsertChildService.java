@@ -5,6 +5,7 @@ import comboDev.arsdiapason.model.Bambino;
 import comboDev.arsdiapason.model.RelIstitutoBambino;
 import comboDev.arsdiapason.model.RelPsicologoBambino;
 import comboDev.arsdiapason.repository.BambinoRepository;
+import comboDev.arsdiapason.repository.RelBambinoSchedaRepository;
 import comboDev.arsdiapason.repository.RelIstitutoBambinoRepository;
 import comboDev.arsdiapason.repository.RelPsicologoBambinoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class InsertChildService {
 
     @Autowired
     private RelIstitutoBambinoRepository relIstitutoBambinoRepository;
+
+    @Autowired
+    private RelBambinoSchedaRepository relBambinoSchedaRepository;
 
     @Transactional(rollbackFor = Exception.class)
     public void insertChild(BambinoDto bambinoDto, Integer idPsicologo) {
@@ -54,6 +58,7 @@ public class InsertChildService {
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteChild(Integer idBambino) {
+        relBambinoSchedaRepository.deleteByIdBambino(idBambino);
         relPsicologoBambinoRepository.deleteByIdBambino(idBambino);
         relIstitutoBambinoRepository.deleteByIdBambino(idBambino);
         bambinoRepository.deleteById(idBambino);
