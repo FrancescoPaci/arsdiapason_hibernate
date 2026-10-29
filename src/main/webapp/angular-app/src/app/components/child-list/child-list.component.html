@@ -62,8 +62,8 @@
               <i class="fa fa-file-text-o"></i>
             </button>
           </td>
-          <td style="width: 0" *ngIf="child.testFinito">
-            <button (click)="goToTestResult(child.id)" class="btn btn-success btn-sm"
+          <td style="width: 0">
+            <button *ngIf="child.testFinito" (click)="goToTestResult(child.id)" class="btn btn-success btn-sm"
                     tooltip="Risultato del Test" placement="left">
               <i class="fa fa-file-text-o"></i>
             </button>

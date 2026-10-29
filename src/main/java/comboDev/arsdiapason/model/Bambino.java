@@ -29,6 +29,18 @@ public class Bambino {
     @Column(name = "data_nascita", nullable = false)
     private LocalDate dataNascita;
 
+    @Column(name = "id_istituto", nullable = false)
+    private Integer idIstituto;
+
+    @Column(name = "classe", nullable = false)
+    private Integer classe;
+
+    @Column(name = "sezione", nullable = false, length = 3)
+    private String sezione;
+
+    @Column(name = "anno_scolastico", nullable = false, length = 9)
+    private String annoScolastico;
+
     @Column(name = "comune_nascita", length = 30)
     private String comuneNascita;
 
@@ -62,14 +74,14 @@ public class Bambino {
     @Column(name = "figlio_adottivo")
     private Boolean figlioAdottivo;
 
-    @Column(name = "note", length = 300)
-    private String note;
-
     @Column(name = "test_finito", nullable = false)
     private Boolean testFinito = false;
 
     @Column(name = "data_test")
     private LocalDate dataTest;
+
+    @Column(name = "note", length = 300)
+    private String note;
 
     @CreationTimestamp
     @Column(name = "data_ins", nullable = false, updatable = false)

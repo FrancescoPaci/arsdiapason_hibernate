@@ -41,7 +41,7 @@ export class InsertChildComponent implements OnInit {
 
     insertChild() {
         if(this.newChild.tipoOperazione === 'crea') {
-          this.newChild.idRelIstitutoBambino = null;
+          this.newChild.id = null;
         }
         this.httpService.callPost('insertChild', this.newChild).subscribe(
             (data: any) => {

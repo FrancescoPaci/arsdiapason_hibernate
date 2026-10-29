@@ -1,9 +1,14 @@
 package comboDev.arsdiapason.service;
 
-import comboDev.arsdiapason.dto.BambinoDto;
 import comboDev.arsdiapason.dto.ResultChildTest;
-import comboDev.arsdiapason.model.*;
-import comboDev.arsdiapason.repository.*;
+import comboDev.arsdiapason.model.Bambino;
+import comboDev.arsdiapason.model.ProvaScheda;
+import comboDev.arsdiapason.model.RelBambinoScheda;
+import comboDev.arsdiapason.model.RelPsicologoBambino;
+import comboDev.arsdiapason.repository.BambinoRepository;
+import comboDev.arsdiapason.repository.ProvaSchedaRepository;
+import comboDev.arsdiapason.repository.RelBambinoSchedaRepository;
+import comboDev.arsdiapason.repository.RelPsicologoBambinoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +24,6 @@ public class PaginaGraficiService {
     private BambinoRepository bambinoRepository;
     @Autowired
     private RelPsicologoBambinoRepository relPsicologoBambinoRepository;
-    @Autowired
-    private RelIstitutoBambinoRepository relIstitutoBambinoRepository;
     @Autowired
     private RelBambinoSchedaRepository relBambinoSchedaRepository;
     @Autowired
@@ -42,24 +45,18 @@ public class PaginaGraficiService {
             if (bambinoOpt.isPresent()) {
                 Bambino bambino = bambinoOpt.get();
 
-                List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findByidBambino(bambino.getId());
+                List<RelBambinoScheda> relBambinoSchedaList = relBambinoSchedaRepository.findByIdBambino(bambino.getId());
 
-                for (RelIstitutoBambino relIB : relIstitutoBambinoList) {
-                    BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getId(), relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
+                List<ProvaScheda> provaSchedaList = new ArrayList<>();
+                for (RelBambinoScheda relBambinoScheda : relBambinoSchedaList) {
+                    Optional<ProvaScheda> provaSchedaOpt = provaSchedaRepository.findById(relBambinoScheda.getIdProvaScheda());
+                    provaSchedaOpt.ifPresent(provaSchedaList::add);
+                }
 
-                    List<RelBambinoScheda> relBambinoSchedaList = relBambinoSchedaRepository.findByIdBambino(bambino.getId());
-
-                    List<ProvaScheda> provaSchedaList = new ArrayList<>();
-                    for (RelBambinoScheda relBambinoScheda : relBambinoSchedaList) {
-                        Optional<ProvaScheda> provaSchedaOpt = provaSchedaRepository.findById(relBambinoScheda.getIdProvaScheda());
-                        provaSchedaOpt.ifPresent(provaSchedaList::add);
-                    }
-
-                    if (!provaSchedaList.isEmpty()) {
-                        resultChildTest.setProveSchede(provaSchedaList);
-                        resultChildTest.setBambino(bambinoDto);
-                        resultChildTests.add(resultChildTest);
-                    }
+                if (!provaSchedaList.isEmpty()) {
+                    resultChildTest.setProveSchede(provaSchedaList);
+                    resultChildTest.setBambino(bambino);
+                    resultChildTests.add(resultChildTest);
                 }
             }
         }

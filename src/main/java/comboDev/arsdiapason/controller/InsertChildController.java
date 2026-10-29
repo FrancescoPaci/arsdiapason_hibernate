@@ -1,6 +1,6 @@
 package comboDev.arsdiapason.controller;
 
-import comboDev.arsdiapason.dto.BambinoDto;
+import comboDev.arsdiapason.model.Bambino;
 import comboDev.arsdiapason.service.InsertChildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ public class InsertChildController implements BasicController {
     private InsertChildService insertChildService;
 
     @PostMapping("/insertChild")
-    public void insertChild(Authentication authentication, @RequestBody BambinoDto bambino) {
+    public void insertChild(Authentication authentication, @RequestBody Bambino bambino) {
         insertChildService.insertChild(bambino, (Integer) authentication.getDetails());
     }
 

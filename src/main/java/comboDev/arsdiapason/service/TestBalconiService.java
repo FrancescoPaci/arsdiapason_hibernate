@@ -43,7 +43,6 @@ public class TestBalconiService {
 
     @Transactional(rollbackFor = Exception.class)
     public void saveTest(TestBalconi testBalconi) {
-        // 1. Salva le relazioni tra il bambino e le prove scelte
         for (Byte idProvaScheda : testBalconi.getIdsProvaSceda()) {
             RelBambinoScheda relBambinoScheda = new RelBambinoScheda();
             relBambinoScheda.setIdBambino(testBalconi.getBambino().getId());
@@ -51,11 +50,9 @@ public class TestBalconiService {
             relBambinoSchedaRepository.save(relBambinoScheda);
         }
 
-        // 2. Aggiorna lo stato del bambino (test finito e data del test)
         Bambino bambino = testBalconi.getBambino();
         bambino.setTestFinito(true);
 
-        // save() in JPA aggiorna il record esistente se l'ID è presente
         bambinoRepository.save(bambino);
     }
 }

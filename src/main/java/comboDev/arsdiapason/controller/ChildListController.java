@@ -1,6 +1,6 @@
 package comboDev.arsdiapason.controller;
 
-import comboDev.arsdiapason.dto.BambinoDto;
+import comboDev.arsdiapason.model.Bambino;
 import comboDev.arsdiapason.service.ChildListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ public class ChildListController implements BasicController  {
     private ChildListService childListService;
 
     @PostMapping("/childsList")
-    public List<BambinoDto> childsList(Authentication authentication) {
+    public List<Bambino> childsList(Authentication authentication) {
         return childListService.childsList((Integer) authentication.getDetails());
     }
 

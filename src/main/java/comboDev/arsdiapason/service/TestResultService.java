@@ -1,12 +1,13 @@
 package comboDev.arsdiapason.service;
 
-import comboDev.arsdiapason.dto.BambinoDto;
 import comboDev.arsdiapason.dto.ResultChildTest;
 import comboDev.arsdiapason.model.Bambino;
 import comboDev.arsdiapason.model.ProvaScheda;
 import comboDev.arsdiapason.model.RelBambinoScheda;
-import comboDev.arsdiapason.model.RelIstitutoBambino;
-import comboDev.arsdiapason.repository.*;
+import comboDev.arsdiapason.repository.AreaProvaRepository;
+import comboDev.arsdiapason.repository.BambinoRepository;
+import comboDev.arsdiapason.repository.ProvaSchedaRepository;
+import comboDev.arsdiapason.repository.RelBambinoSchedaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,6 @@ public class TestResultService {
     @Autowired
     private RelBambinoSchedaRepository relBambinoSchedaRepository;
     @Autowired
-    private RelIstitutoBambinoRepository relIstitutoBambinoRepository;
-    @Autowired
     private AreaProvaRepository areaProvaRepository;
 
     @Transactional(readOnly = true)
@@ -36,13 +35,6 @@ public class TestResultService {
         Bambino bambino = bambinoRepository.findById(idBambino)
                 .orElseThrow(() -> new RuntimeException("Bambino non trovato con id: " + idBambino));
 
-        List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findByidBambino(bambino.getId());
-
-        for (RelIstitutoBambino relIB : relIstitutoBambinoList) {
-            BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getId(), relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
-            resultChildTest.setBambino(bambinoDto);
-        }
-
         List<RelBambinoScheda> relBambinoSchedas = relBambinoSchedaRepository.findByIdBambino(idBambino);
         List<ProvaScheda> provaSchedas = new ArrayList<>();
 
@@ -51,9 +43,8 @@ public class TestResultService {
             provaSchedaOpt.ifPresent(provaSchedas::add);
         }
 
+        resultChildTest.setBambino(bambino);
         resultChildTest.setProveSchede(provaSchedas);
-
-        // 4. Recupera tutte le aree di prova (sostituisce selectByExample(null))
         resultChildTest.setAreaProva(areaProvaRepository.findAll());
 
         return resultChildTest;

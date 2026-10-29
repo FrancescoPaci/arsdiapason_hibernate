@@ -48,6 +48,10 @@ CREATE TABLE bambino
     cognome             VARCHAR(50) NOT NULL,
     sesso               VARCHAR(1)  NOT NULL,
     data_nascita        DATE        NOT NULL,
+    id_istituto         INT         NOT NULL,
+    classe              INT         NOT NULL,
+    sezione             VARCHAR(3)  NOT NULL,
+    anno_scolastico     VARCHAR(9)  NOT NULL,
     comune_nascita      VARCHAR(30),
     comune_residenza    VARCHAR(30),
     indirizzo_residenza VARCHAR(50),
@@ -64,32 +68,8 @@ CREATE TABLE bambino
     note                VARCHAR(300),
     data_ins            TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_mod            TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE rel_istituto_bambino
-(
-    id          INT AUTO_INCREMENT,
-    id_istituto INT        NOT NULL,
-    id_bambino  INT        NOT NULL,
-    classe      INT        NOT NULL,
-    sezione     VARCHAR(3) NOT NULL,
-    data_ins    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    CONSTRAINT FK_RIB_istituto FOREIGN KEY (id_istituto) REFERENCES istituto (id),
-    CONSTRAINT FK_RIB_bambino FOREIGN KEY (id_bambino) REFERENCES bambino (id)
-);
-
-CREATE TABLE rel_psicologo_bambino
-(
-    id_psicologo INT       NOT NULL,
-    id_bambino   INT       NOT NULL,
-    data_ins     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_psicologo, id_bambino),
-    CONSTRAINT FK_RPB_psicologo FOREIGN KEY (id_psicologo) REFERENCES psicologo (id),
-    CONSTRAINT FK_RPB_bambino FOREIGN KEY (id_bambino) REFERENCES bambino (id)
+    CONSTRAINT FK_bambino_istituto FOREIGN KEY (id_istituto) REFERENCES istituto (id)
 );
 
 CREATE TABLE scheda
@@ -117,6 +97,27 @@ CREATE TABLE prova_scheda
     CONSTRAINT FK_PS_numScheda FOREIGN KEY (numero_scheda) REFERENCES scheda (numero)
 );
 
+CREATE TABLE area_prova
+(
+    prova    TINYINT     NOT NULL,
+    anni     TINYINT     NOT NULL,
+    testo    VARCHAR(85) NOT NULL,
+    data_ins TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_mod TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (prova, anni)
+);
+
+CREATE TABLE rel_psicologo_bambino
+(
+    id_psicologo INT       NOT NULL,
+    id_bambino   INT       NOT NULL,
+    data_ins     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_mod     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_psicologo, id_bambino),
+    CONSTRAINT FK_RPB_psicologo FOREIGN KEY (id_psicologo) REFERENCES psicologo (id),
+    CONSTRAINT FK_RPB_bambino FOREIGN KEY (id_bambino) REFERENCES bambino (id)
+);
+
 CREATE TABLE rel_bambino_scheda
 (
     id_bambino      INT       NOT NULL,
@@ -128,20 +129,10 @@ CREATE TABLE rel_bambino_scheda
     CONSTRAINT FK_RBS_provaScheda FOREIGN KEY (id_prova_scheda) REFERENCES prova_scheda (id)
 );
 
-CREATE TABLE area_prova
-(
-    prova    TINYINT     NOT NULL,
-    anni     TINYINT     NOT NULL,
-    testo    VARCHAR(85) NOT NULL,
-    data_ins TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_mod TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (prova, anni)
-);
 
--- rollback DROP TABLE area_prova;
--- rollback DROP TABLE rel_istituto_bambino;
 -- rollback DROP TABLE rel_psicologo_bambino;
 -- rollback DROP TABLE rel_bambino_scheda;
+-- rollback DROP TABLE area_prova;
 -- rollback DROP TABLE prova_scheda;
 -- rollback DROP TABLE scheda;
 -- rollback DROP TABLE bambino;

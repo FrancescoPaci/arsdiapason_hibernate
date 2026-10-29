@@ -11,7 +11,7 @@
 
 <form name="form" (ngSubmit)="f.form.valid && insertChild()" #f="ngForm" novalidate>
 
-  <div class="row" *ngIf="newChild.idRelIstitutoBambino">
+  <div class="row" *ngIf="newChild.id">
     <div class="col-7">
       <div class="alert alert-success">
         <strong class="mb-1">
@@ -54,6 +54,11 @@
               name="istituto" class="custom-select custom-select-sm" required>
         <option *ngFor="let x of istituti" value="{{x.id}}">{{x.nome}}</option>
       </select>
+    </div>
+    <div class="col-2">
+      <label>Anno Scolastico</label>
+      <input type="text" class="form-control form-control-sm" name="annoScolastico" [(ngModel)]="newChild.annoScolastico"
+             [disabled]="!newChild.idIstituto" placeholder="Es. 2026/2027" required/>
     </div>
     <div class="col-1">
       <label>Classe</label>
