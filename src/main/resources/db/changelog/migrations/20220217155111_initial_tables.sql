@@ -69,13 +69,14 @@ CREATE TABLE bambino
 
 CREATE TABLE rel_istituto_bambino
 (
+    id          INT AUTO_INCREMENT,
     id_istituto INT        NOT NULL,
     id_bambino  INT        NOT NULL,
     classe      INT        NOT NULL,
     sezione     VARCHAR(3) NOT NULL,
     data_ins    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_mod    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_istituto, id_bambino, classe, sezione),
+    PRIMARY KEY (id),
     CONSTRAINT FK_RIB_istituto FOREIGN KEY (id_istituto) REFERENCES istituto (id),
     CONSTRAINT FK_RIB_bambino FOREIGN KEY (id_bambino) REFERENCES bambino (id)
 );

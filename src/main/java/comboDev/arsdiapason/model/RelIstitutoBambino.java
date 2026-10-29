@@ -9,23 +9,22 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rel_istituto_bambino")
-@IdClass(RelIstitutoBambinoId.class)
 @Data
 public class RelIstitutoBambino {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @Column(name = "id_istituto")
     private Integer idIstituto;
 
-    @Id
     @Column(name = "id_bambino")
     private Integer idBambino;
 
-    @Id
     @Column(name = "classe", nullable = false)
     private Integer classe;
 
-    @Id
     @Column(name = "sezione", nullable = false, length = 3)
     private String sezione;
 

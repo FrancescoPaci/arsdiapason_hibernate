@@ -46,6 +46,9 @@ public class InsertChildService {
             relIstitutoBambino.setClasse(bambinoDto.getClasse());
             relIstitutoBambino.setSezione(bambinoDto.getSezione());
         }
+        if (bambinoDto.getIdRelIstitutoBambino() != null) {
+            relIstitutoBambino.setId(bambinoDto.getIdRelIstitutoBambino());
+        }
         relIstitutoBambinoRepository.save(relIstitutoBambino);
     }
 

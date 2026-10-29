@@ -29,45 +29,34 @@ public class PaginaGraficiService {
     @Transactional(readOnly = true)
     public List<ResultChildTest> getAllTests(Integer idPsicologo) {
 
-        // 1. Recupera tutte le relazioni psicologo-bambino filtrando per idPsicologo
-        List<RelPsicologoBambino> relations = relPsicologoBambinoRepository.findAll().stream()
-                .filter(r -> r.getIdPsicologo().equals(idPsicologo))
-                .toList();
-
         List<ResultChildTest> resultChildTests = new ArrayList<>();
 
-        for (RelPsicologoBambino relation : relations) {
+        List<RelPsicologoBambino> relPB = relPsicologoBambinoRepository.findByidPsicologo(idPsicologo);
+
+        for (RelPsicologoBambino relation : relPB) {
 
             ResultChildTest resultChildTest = new ResultChildTest();
 
-            // 2. Cerca il bambino solo se ha testFinito == true
             Optional<Bambino> bambinoOpt = bambinoRepository.findByIdAndTestFinitoTrue(relation.getIdBambino());
 
             if (bambinoOpt.isPresent()) {
                 Bambino bambino = bambinoOpt.get();
 
-                // 3. Recupera la relazione con l'istituto
-                List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findAll().stream()
-                        .filter(rib -> rib.getIdBambino().equals(bambino.getId()))
-                        .toList();
+                List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findByidBambino(bambino.getId());
 
-                if (!relIstitutoBambinoList.isEmpty()) {
-                    RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
-                    BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
+                for (RelIstitutoBambino relIB : relIstitutoBambinoList) {
+                    BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getId(), relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
 
-                    // 4. Recupera le relazioni delle schede del bambino
-                    List<RelBambinoScheda> relBambinoSchedaList = relBambinoSchedaRepository.findAll().stream()
-                            .filter(rbs -> rbs.getIdBambino().equals(bambino.getId()))
-                            .toList();
+                    List<RelBambinoScheda> relBambinoSchedaList = relBambinoSchedaRepository.findByIdBambino(bambino.getId());
 
-                    List<ProvaScheda> provaSchedas = new ArrayList<>();
+                    List<ProvaScheda> provaSchedaList = new ArrayList<>();
                     for (RelBambinoScheda relBambinoScheda : relBambinoSchedaList) {
                         Optional<ProvaScheda> provaSchedaOpt = provaSchedaRepository.findById(relBambinoScheda.getIdProvaScheda());
-                        provaSchedaOpt.ifPresent(provaSchedas::add);
+                        provaSchedaOpt.ifPresent(provaSchedaList::add);
                     }
 
-                    if (!provaSchedas.isEmpty()) {
-                        resultChildTest.setProveSchede(provaSchedas);
+                    if (!provaSchedaList.isEmpty()) {
+                        resultChildTest.setProveSchede(provaSchedaList);
                         resultChildTest.setBambino(bambinoDto);
                         resultChildTests.add(resultChildTest);
                     }
@@ -76,4 +65,5 @@ public class PaginaGraficiService {
         }
         return resultChildTests;
     }
+
 }

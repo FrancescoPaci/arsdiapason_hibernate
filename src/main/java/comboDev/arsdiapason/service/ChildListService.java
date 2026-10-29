@@ -30,38 +30,33 @@ public class ChildListService {
     @Transactional(readOnly = true)
     public List<BambinoDto> childsList(Integer idPsicologo) {
 
-        // 1. Recupera tutte le relazioni psicologo-bambino per quell'ID
-        // (Nota: puoi aggiungere un metodo custom nel repository se preferisci, oppure filtrare)
-        List<RelPsicologoBambino> relations = relPsicologoBambinoRepository.findAll().stream()
-                .filter(r -> r.getIdPsicologo().equals(idPsicologo))
-                .toList();
+        List<BambinoDto> childs = new ArrayList<>();
 
-        List<BambinoDto> bambini = new ArrayList<>();
+        List<RelPsicologoBambino> relPsicologoBambino = relPsicologoBambinoRepository.findByidPsicologo(idPsicologo);
 
-        for (RelPsicologoBambino relation : relations) {
-            // 2. Recupera il bambino tramite JPA
-            Optional<Bambino> bambinoOpt = bambinoRepository.findById(relation.getIdBambino());
+        for (RelPsicologoBambino relPB : relPsicologoBambino) {
 
-            if (bambinoOpt.isPresent()) {
-                Bambino bambino = bambinoOpt.get();
+            List<RelIstitutoBambino> relIstitutoBambino = relIstitutoBambinoRepository.findByidBambino(relPB.getIdBambino());
 
-                // 3. Recupera la relazione con l'istituto per il bambino corrente
-                List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findAll().stream()
-                        .filter(rib -> rib.getIdBambino().equals(bambino.getId()))
-                        .toList();
+            for (RelIstitutoBambino relIB : relIstitutoBambino) {
 
-                RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
+                Optional<Bambino> bambinoOpt = bambinoRepository.findById(relIB.getIdBambino());
 
-                // 4. Mappa nel DTO esattamente come facevi prima
-                BambinoDto bambinoDto = BambinoDto.fromEntity(
-                        bambino,
-                        relIB.getIdIstituto(),
-                        relIB.getClasse(),
-                        relIB.getSezione()
-                );
-                bambini.add(bambinoDto);
+                if (bambinoOpt.isPresent()) {
+                    Bambino bambino = bambinoOpt.get();
+
+                    BambinoDto bambinoDto = BambinoDto.fromEntity(
+                            bambino,
+                            relIB.getId(),
+                            relIB.getIdIstituto(),
+                            relIB.getClasse(),
+                            relIB.getSezione()
+                    );
+                    childs.add(bambinoDto);
+                }
             }
         }
-        return bambini;
+        return childs;
     }
+
 }

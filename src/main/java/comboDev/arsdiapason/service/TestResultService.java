@@ -33,22 +33,16 @@ public class TestResultService {
     public ResultChildTest getResultChildTest(Integer idBambino) {
         ResultChildTest resultChildTest = new ResultChildTest();
 
-        // 1. Recupera il bambino
         Bambino bambino = bambinoRepository.findById(idBambino)
                 .orElseThrow(() -> new RuntimeException("Bambino non trovato con id: " + idBambino));
 
-        // 2. Recupera la relazione con l'istituto associata al bambino
-        List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findAll().stream()
-                .filter(rib -> rib.getIdBambino().equals(bambino.getId()))
-                .toList();
+        List<RelIstitutoBambino> relIstitutoBambinoList = relIstitutoBambinoRepository.findByidBambino(bambino.getId());
 
-        if (!relIstitutoBambinoList.isEmpty()) {
-            RelIstitutoBambino relIB = relIstitutoBambinoList.getFirst();
-            BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
+        for (RelIstitutoBambino relIB : relIstitutoBambinoList) {
+            BambinoDto bambinoDto = BambinoDto.fromEntity(bambino, relIB.getId(), relIB.getIdIstituto(), relIB.getClasse(), relIB.getSezione());
             resultChildTest.setBambino(bambinoDto);
         }
 
-        // 3. Recupera le schede/prove collegate al bambino
         List<RelBambinoScheda> relBambinoSchedas = relBambinoSchedaRepository.findByIdBambino(idBambino);
         List<ProvaScheda> provaSchedas = new ArrayList<>();
 
