@@ -17,3 +17,6 @@ form textarea.ng-invalid {
   font-size: 1.2em !important;
   font-weight: 500 !important;
 }
+.alert-dismissible {
+  transition: opacity 1s ease-in-out;
+}

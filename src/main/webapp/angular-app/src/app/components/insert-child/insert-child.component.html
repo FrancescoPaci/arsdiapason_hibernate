@@ -1,10 +1,7 @@
-<div class="row" *ngIf="!istituti.length">
+<div class="row">
   <div class="col-6">
-    <div class="alert alert-info">
-      <strong>Non è possibile inserire un nuovo bambino in quanto non è presente nessun istituto al quale collegarlo. E'
-        possibile censire un nuovo istituto dala pagina
-        <a [routerLink]="['/gestisciIstituto']" routerLinkActive="active">Gestione Istituti</a>
-      </strong>
+    <div id="mio-alert" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+      Inserimento avvenuto con successo.
     </div>
   </div>
 </div>
@@ -29,7 +26,7 @@
                  name="tipoOperazione"
                  class="custom-control-input"
                  value="modifica"
-                 [(ngModel)]="newChild.tipoOperazione"
+                 [(ngModel)]="tipoOperazione"
                  required>
           <label class="custom-control-label font-weight-bolder" for="modifica">Modifica Record Esistente</label>
         </div>
@@ -39,7 +36,7 @@
                  name="tipoOperazione"
                  class="custom-control-input"
                  value="crea"
-                 [(ngModel)]="newChild.tipoOperazione"
+                 [(ngModel)]="tipoOperazione"
                  required>
           <label class="custom-control-label font-weight-bolder" for="crea">Crea Nuovo Record</label>
         </div>
@@ -50,14 +47,16 @@
   <div class="row mb-3 align-items-end">
     <div class="col-2">
       <label>Istituto</label>
-      <select [(ngModel)]="newChild.idIstituto" (ngModelChange)="getSezioni($event)" [disabled]="!istituti.length"
+      <select [(ngModel)]="newChild.idIstituto" (ngModelChange)="getInstituteDetails($event)"
+              [disabled]="!istituti.length"
               name="istituto" class="custom-select custom-select-sm" required>
         <option *ngFor="let x of istituti" value="{{x.id}}">{{x.nome}}</option>
       </select>
     </div>
     <div class="col-2">
       <label>Anno Scolastico</label>
-      <input type="text" class="form-control form-control-sm" name="annoScolastico" [(ngModel)]="newChild.annoScolastico"
+      <input type="text" class="form-control form-control-sm" name="annoScolastico"
+             [(ngModel)]="newChild.annoScolastico"
              [disabled]="!newChild.idIstituto" placeholder="Es. 2026/2027" required/>
     </div>
     <div class="col-1">
@@ -177,7 +176,7 @@
 
   <div class="row">
     <div class="col-2">
-      <button class="btn btn-primary mr-5" type="submit" [disabled]="f.form.invalid">Salva</button>
+      <button class="btn btn-primary mr-5" type="submit" [disabled]="f.form.invalid || hasNotChanges">Salva</button>
     </div>
     <div class="col-2">
       <button class="btn btn-primary" (click)="newChild = {note: ''}">Svuota campi</button>
