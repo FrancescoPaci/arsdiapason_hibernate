@@ -48,7 +48,7 @@ export class BasicAuthInterceptor implements HttpInterceptor {
     openErrorModal(error: any) {
         const initialState = {
             title: "Si è verificato un errore",
-            text: error.cause || error.detail
+            text: error.message
         }
         this.modalService.show(AlertModalComponent, { initialState })
     }

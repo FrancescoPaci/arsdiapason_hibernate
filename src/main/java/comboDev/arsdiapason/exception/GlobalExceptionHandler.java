@@ -15,7 +15,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private class ErrorResponse {
+    private static class ErrorResponse {
         private HttpStatus status;
         private int intStatus;
         private String message;
@@ -24,11 +24,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
+
+        String cause = (ex.getCause() != null) ? ex.getCause().getMessage() : "Nessuna causa specifica";
+        String message = ex.getMessage() != null ? ex.getMessage() : ex.toString();
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                .body(new ErrorResponse(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        ex.getMessage(), ex.getCause().getMessage()));
+                        message,
+                        cause
+                ));
     }
 
 }
-
