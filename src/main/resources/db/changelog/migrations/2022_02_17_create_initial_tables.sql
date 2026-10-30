@@ -38,7 +38,8 @@ CREATE TABLE istituto
     sezioni   VARCHAR(120) NOT NULL,
     data_ins  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_mod  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT uk_istituto_nome UNIQUE (nome)
 );
 
 CREATE TABLE bambino
@@ -49,7 +50,7 @@ CREATE TABLE bambino
     sesso               VARCHAR(1)  NOT NULL,
     data_nascita        DATE        NOT NULL,
     id_istituto         INT         NOT NULL,
-    classe              INT         NOT NULL,
+    classe              VARCHAR(10) NOT NULL,
     sezione             VARCHAR(3)  NOT NULL,
     anno_scolastico     VARCHAR(9)  NOT NULL,
     comune_nascita      VARCHAR(30),
