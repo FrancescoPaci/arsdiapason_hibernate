@@ -13,20 +13,34 @@
           </div>
           <div class="col-6">
             <label>Regione</label>
-            <input type="text" class="form-control form-control-sm" name="regione" [(ngModel)]="newIstituto.regione"
-                   required/>
+            <select [(ngModel)]="newIstituto.regione"
+                    class="form-control form-control-sm"
+                    name="regione"
+                    (change)="onRegionChange($event.target.value)"
+                    required>
+              <option *ngFor="let reg of regioni" [value]="reg">{{ reg }}</option>
+            </select>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-6">
             <label>Provincia</label>
-            <input type="text" class="form-control form-control-sm" name="provincia" [(ngModel)]="newIstituto.provincia"
-              required />
+            <select [(ngModel)]="newIstituto.provincia"
+                    class="form-control form-control-sm"
+                    name="provincia"
+                    [disabled]="!newIstituto.regione"
+                    required>
+              <option *ngFor="let prov of province" [value]="prov">{{ prov }}</option>
+            </select>
           </div>
           <div class="col-6">
             <label>Comune</label>
-            <input type="text" class="form-control form-control-sm" name="comune" [(ngModel)]="newIstituto.comune"
+            <input type="text"
+                   class="form-control form-control-sm"
+                   name="comune"
+                   [(ngModel)]="newIstituto.comune"
+                   [disabled]="!newIstituto.provincia"
               required />
           </div>
         </div>
@@ -58,7 +72,7 @@
         <div class="row align-items-end">
           <div class="col-12" style="text-align: right">
             <button class="btn btn-primary mr-3" type="submit" [disabled]="f.form.invalid">Salva</button>
-            <button class="btn btn-primary" (click)="newIstituto = {}">Svuota Campi</button>
+            <button class="btn btn-primary" (click)="svuotaCampi()">Svuota Campi</button>
           </div>
         </div>
       </fieldset>

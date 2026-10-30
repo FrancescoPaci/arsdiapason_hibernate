@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core'
 import {HttpService} from '../../services/http.service'
 import {FormBuilder, Validators} from '@angular/forms'
+import {PROVINCE_ITALIANE, REGIONI_ITALIANE} from '../../data/regioni-province';
 import * as _ from 'lodash'
 
 @Component({
@@ -20,6 +21,8 @@ export class GestisciIstitutiComponent implements OnInit {
     this.getListaIstituti()
   }
 
+  regioni = REGIONI_ITALIANE;
+  province: string[] = [];
   istitutiForm: any
   istituti: any = []
   newIstituto: any = {}
@@ -116,6 +119,15 @@ export class GestisciIstitutiComponent implements OnInit {
   formInvalid(index: number) {
     return this.istitutiForm.controls.istitutiRows.controls[index].pristine ||
       this.istitutiForm.controls.istitutiRows.controls[index].status === 'INVALID'
+  }
+
+  onRegionChange(regione: string) {
+    this.province = PROVINCE_ITALIANE[regione] || [];
+  }
+
+  svuotaCampi() {
+    this.newIstituto = {}
+    this.province = []
   }
 
 }
