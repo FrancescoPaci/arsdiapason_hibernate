@@ -33,7 +33,7 @@ public class Bambino {
     private Integer idIstituto;
 
     @Column(name = "classe", nullable = false)
-    private Integer classe;
+    private String classe;
 
     @Column(name = "sezione", nullable = false, length = 3)
     private String sezione;

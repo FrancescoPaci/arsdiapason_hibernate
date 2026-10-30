@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core'
 import {HttpService} from '../../services/http.service'
-import * as $ from 'jquery'
 import * as _ from 'lodash'
 import {fromEvent} from 'rxjs'
 import {debounceTime} from 'rxjs/operators'
+declare var $: any;
 
 @Component({
    selector: 'app-pagina-grafici',
@@ -25,10 +25,11 @@ export class PaginaGraficiComponent implements OnInit {
 
    istitutiOrigin: any = []
    sezioniOrigin: any = []
+   classiOrigin: any = []
    provaSchedaList: any = []
-   searchCombos: any = ['regione', 'provincia', 'comune', 'istituto', 'sezione']
-   searchLists: any = { regione: [], provincia: [], comune: [], istituto: [], sezione: [] }
-   searchModels: any = { regione: {}, provincia: {}, comune: {}, istituto: {}, sezione: {} }
+   searchCombos: any = ['regione', 'provincia', 'comune', 'istituto', 'classe', 'sezione']
+   searchLists: any = { regione: [], provincia: [], comune: [], istituto: [], classi: [], sezione: [] }
+   searchModels: any = { regione: {}, provincia: {}, comune: {}, istituto: {}, classe: {}, sezione: {} }
    anniArray: any = [5, 6, 7, 8]
    type: string
    data: any[] = []
@@ -46,10 +47,14 @@ export class PaginaGraficiComponent implements OnInit {
                for (var j = 0; j < proveSchede.length; j++) {
                   proveSchede[j].idIstituto = data[i].bambino.idIstituto
                   proveSchede[j].sezione = data[i].bambino.sezione
+                  proveSchede[j].classe = data[i].bambino.classe
                }
                this.provaSchedaList = this.provaSchedaList.concat(proveSchede)
                if (!this.sezioniOrigin.includes(data[i].bambino.sezione)) {
                   this.sezioniOrigin.push(data[i].bambino.sezione)
+               }
+               if (!this.classiOrigin.includes(data[i].bambino.classe)) {
+                  this.classiOrigin.push(data[i].bambino.classe)
                }
             }
             this.createChartData()
@@ -75,17 +80,18 @@ export class PaginaGraficiComponent implements OnInit {
       this.searchLists.regione = _(this.istitutiOrigin).groupBy('regione').keys().value()
       this.searchLists.provincia = _(this.istitutiOrigin).groupBy('provincia').keys().value()
       this.searchLists.comune = _(this.istitutiOrigin).groupBy('comune').keys().value()
+      this.searchLists.classe = this.classiOrigin
       this.searchLists.sezione = this.sezioniOrigin
    }
 
    resetCombos() {
-      this.searchModels = { regione: {}, provincia: {}, comune: {}, istituto: {}, sezione: {} }
+      this.searchModels = { regione: {}, provincia: {}, comune: {}, istituto: {}, classi: {}, sezione: {} }
       this.initCombos()
       this.createChartData()
    }
 
    comboDisabled(combo: string) {
-      return combo === 'sezione' ? _.isEmpty(this.searchModels.istituto) || !this.searchLists[combo].length : !this.searchLists[combo].length
+      return combo === 'classe' || combo === 'sezione' ? _.isEmpty(this.searchModels.istituto) || !this.searchLists[combo].length : !this.searchLists[combo].length
    }
 
    createChartData() {
@@ -113,10 +119,17 @@ export class PaginaGraficiComponent implements OnInit {
          for (let i = 0; i < istituti.length; i++) {
             proveScheda = proveScheda.concat(_.filter(this.provaSchedaList, { 'idIstituto': istituti[i].id }))
          }
+         this.searchLists.classe = _(proveScheda).filter(function (o) { return o.classe !== null }).groupBy('classe').keys().value()
          this.searchLists.sezione = _(proveScheda).filter(function (o) { return o.sezione !== null }).groupBy('sezione').keys().value()
+         if (_.isEmpty(this.searchModels.classe)) {
+            this.searchModels.classe = this.searchLists.classe.length === 1 ? this.searchLists.classe[0] : {}
+         }
          if (_.isEmpty(this.searchModels.sezione)) {
             this.searchModels.sezione = this.searchLists.sezione.length === 1 ? this.searchLists.sezione[0] : {}
          }
+      }
+      if (!_.isEmpty(this.searchModels.classe)) {
+          proveScheda = _.filter(proveScheda, { 'classe': this.searchModels.classe })
       }
       if (!_.isEmpty(this.searchModels.sezione)) {
          proveScheda = _.filter(proveScheda, { 'sezione': this.searchModels.sezione })
@@ -175,8 +188,9 @@ export class PaginaGraficiComponent implements OnInit {
    })
 
    resizeChart() {
-      let w = $("#chart-div").width()
-      let h = $("#chart-div").width() / 3
+      let div = $("#chart-div")
+      let w = div.width()
+      let h = div.width() / 3
       this.options['chartArea'] = { left: w / 100 * 5, right: w / 100 * 5, top: h / 100 * 10, bottom: h / 100 * 8, width: '100%', height: '100%' }
       this.width = w
       this.height = h

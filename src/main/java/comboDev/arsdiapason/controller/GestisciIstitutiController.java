@@ -1,12 +1,10 @@
 package comboDev.arsdiapason.controller;
 
 import comboDev.arsdiapason.model.Istituto;
+import comboDev.arsdiapason.model.enums.ClasseEnum;
 import comboDev.arsdiapason.service.GestisciIstitutiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +17,11 @@ public class GestisciIstitutiController implements BasicController {
     @PostMapping("/getListaIstituti")
     public List<Istituto> getListaIstituti() {
         return gestisciIstitutiService.getListaIstituti();
+    }
+
+    @GetMapping("/getClassi")
+    public List<ClasseEnum> getClassi() {
+        return List.of(ClasseEnum.values());
     }
 
     @PostMapping("/inserisciIstituto")

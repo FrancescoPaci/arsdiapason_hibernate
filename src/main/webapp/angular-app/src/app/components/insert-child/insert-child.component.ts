@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core'
 import {HttpService} from '../../services/http.service'
 import {BsModalService} from 'ngx-bootstrap/modal'
-import {AlertModalComponent} from '../alert-modal/alert-modal.component'
 import * as moment from 'moment'
 
 declare var $: any;
@@ -24,10 +23,21 @@ export class InsertChildComponent implements OnInit {
     sezioni: any = []
     textAreaMaxLength: number = 300
     tipoOperazione: string
-
+    classi: any = []
 
     ngOnInit(): void {
         this.getListaIstituti()
+        this.getClassi()
+    }
+
+    getClassi() {
+      this.httpService.callGet('getClassi').subscribe(
+        (data: any) => {
+          this.classi = data
+        },
+        (error: any) => { },
+        () => { }
+      )
     }
 
     getListaIstituti() {

@@ -63,7 +63,7 @@
       <label>Classe</label>
       <select [(ngModel)]="newChild.classe" class="custom-select custom-select-sm" required
               [disabled]="!newChild.idIstituto || newChild.idIstituto == 1" name="classeSelect">
-        <option *ngFor="let x of [1, 2, 3, 4, 5]" [value]="x">{{ x }}</option>
+        <option *ngFor="let x of classi" [value]="x">{{ x }}</option>
       </select>
     </div>
     <div class="col-1">

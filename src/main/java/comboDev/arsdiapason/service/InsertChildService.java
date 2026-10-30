@@ -22,7 +22,7 @@ public class InsertChildService {
     @Transactional(rollbackFor = Exception.class)
     public void insertChild(Bambino bambino, Integer idPsicologo) {
         if (bambino.getIdIstituto().equals(1)) {
-            bambino.setClasse(0);
+            bambino.setClasse("");
             bambino.setSezione("");
         }
         if (bambino.getId() == null) {
