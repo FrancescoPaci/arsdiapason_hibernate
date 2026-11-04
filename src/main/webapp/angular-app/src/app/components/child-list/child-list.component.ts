@@ -133,7 +133,8 @@ export class ChildListComponent implements OnInit {
     }
 
     comboDisabled(combo: string) {
-        return combo === 'sezione' || combo === 'classe' ? _.isEmpty(this.searchModels.istituto) || !this.searchLists[combo].length : !this.searchLists[combo].length
+      return (combo === 'sezione' || combo === 'classe') &&
+        !(this.searchModels.istituto && this.searchModels.istituto.id > 1 && this.searchLists[combo].length)
     }
 
     getColSpan(combo: string) {
