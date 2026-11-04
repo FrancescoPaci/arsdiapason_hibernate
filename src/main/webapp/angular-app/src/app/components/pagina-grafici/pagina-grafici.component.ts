@@ -16,7 +16,6 @@ export class PaginaGraficiComponent implements OnInit {
 
    ngOnInit(): void {
       this.getAllTests()
-      this.getListaIstituti()
    }
 
    ngOnDestroy() {
@@ -42,10 +41,15 @@ export class PaginaGraficiComponent implements OnInit {
    getAllTests() {
       this.httpService.callPost('getAllTests', null).subscribe(
          (data: any) => {
-            for (var i = 0; i < data.length; i++) {
+           let ids = []
+           for (let i = 0; i < data.length; i++) {
                let proveSchede = data[i].proveSchede
-               for (var j = 0; j < proveSchede.length; j++) {
-                  proveSchede[j].idIstituto = data[i].bambino.idIstituto
+               for (let j = 0; j < proveSchede.length; j++) {
+               let idIstituto = data[i].bambino.idIstituto
+                  if (!ids.includes(idIstituto)) {
+                    ids.push(idIstituto)
+                  }
+                  proveSchede[j].idIstituto = idIstituto
                   proveSchede[j].sezione = data[i].bambino.sezione
                   proveSchede[j].classe = data[i].bambino.classe
                }
@@ -57,18 +61,15 @@ export class PaginaGraficiComponent implements OnInit {
                   this.classiOrigin.push(data[i].bambino.classe)
                }
             }
-            this.createChartData()
-         },
-         (error: any) => { },
-         () => { }
-      )
-   }
-
-   getListaIstituti() {
-      this.httpService.callPost('getListaIstituti', null).subscribe(
-         (data: any) => {
-            this.istitutiOrigin = data
-            this.initCombos()
+            this.httpService.callPost('getListaIstituti', null).subscribe(
+               (data: any) => {
+                 this.istitutiOrigin =  _.filter(data, i => _.includes(ids, i.id));
+                 this.initCombos()
+                 this.createChartData()
+               },
+               (error: any) => { },
+               () => { }
+            )
          },
          (error: any) => { },
          () => { }
@@ -97,8 +98,11 @@ export class PaginaGraficiComponent implements OnInit {
    createChartData() {
       let proveScheda = this.provaSchedaList
       let istituti = []
+      if (this.istitutiOrigin.length == 1) {
+         istituti = this.istitutiOrigin
+      }
       if (this.searchModels.istituto.id) {
-         istituti.push(this.searchModels.istituto)
+         istituti = this.searchModels.istituto
       } else if (!_.isEmpty(this.searchModels.comune)) {
          istituti = _.filter(this.istitutiOrigin, { 'comune': this.searchModels.comune })
       } else if (!_.isEmpty(this.searchModels.provincia)) {
