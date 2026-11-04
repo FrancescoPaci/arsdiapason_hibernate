@@ -24,6 +24,7 @@ export class GestisciIstitutiComponent implements OnInit {
   regioni = REGIONI_ITALIANE;
   province: string[] = [];
   istitutiForm: any
+  istitutiFormOrigin: any
   istituti: any = []
   newIstituto: any = {}
 
@@ -80,6 +81,19 @@ export class GestisciIstitutiComponent implements OnInit {
         sezioni: [x.sezioni, [Validators.required]]
       }))
     )
+    this.istitutiFormOrigin = this.formBuilder.group({
+      istitutiRows: this.formBuilder.array(
+        this.istituti.map(x => this.formBuilder.group({
+          id: [x.id],
+          nome: [x.nome, [Validators.required]],
+          regione: [x.regione, [Validators.required]],
+          provincia: [x.provincia, [Validators.required]],
+          comune: [x.comune, [Validators.required]],
+          indirizzo: [x.indirizzo, [Validators.required]],
+          sezioni: [x.sezioni, [Validators.required]]
+        }))
+      )
+    });
   }
 
   inserisciIstituto() {
@@ -117,8 +131,10 @@ export class GestisciIstitutiComponent implements OnInit {
   }
 
   formInvalid(index: number) {
-    return this.istitutiForm.controls.istitutiRows.controls[index].pristine ||
-      this.istitutiForm.controls.istitutiRows.controls[index].status === 'INVALID'
+    let mod = this.istitutiForm.controls.istitutiRows.controls[index]
+    let origin = this.istitutiFormOrigin.controls.istitutiRows.controls[index]
+    return mod.pristine || mod.status === 'INVALID'
+      || JSON.stringify(mod.value) === JSON.stringify(origin.value)
   }
 
   onRegionChange(regione: string) {
