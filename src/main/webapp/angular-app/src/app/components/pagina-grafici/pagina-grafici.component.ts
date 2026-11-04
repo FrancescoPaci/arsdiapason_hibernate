@@ -37,35 +37,38 @@ export class PaginaGraficiComponent implements OnInit {
    width: number
    height: number
    showChart = false
+   listaBambini: any = []
+   listaBambiniOrigin: any = []
 
    getAllTests() {
-      this.httpService.callPost('getAllTests', null).subscribe(
-         (data: any) => {
-           let ids = []
-           for (let i = 0; i < data.length; i++) {
-               let proveSchede = data[i].proveSchede
-               for (let j = 0; j < proveSchede.length; j++) {
-               let idIstituto = data[i].bambino.idIstituto
-                  if (!ids.includes(idIstituto)) {
-                    ids.push(idIstituto)
-                  }
-                  proveSchede[j].idIstituto = idIstituto
-                  proveSchede[j].sezione = data[i].bambino.sezione
-                  proveSchede[j].classe = data[i].bambino.classe
-               }
-               this.provaSchedaList = this.provaSchedaList.concat(proveSchede)
-               if (!this.sezioniOrigin.includes(data[i].bambino.sezione)) {
-                  this.sezioniOrigin.push(data[i].bambino.sezione)
-               }
-               if (!this.classiOrigin.includes(data[i].bambino.classe)) {
-                  this.classiOrigin.push(data[i].bambino.classe)
-               }
-            }
             this.httpService.callPost('getListaIstituti', null).subscribe(
                (data: any) => {
-                 this.istitutiOrigin =  _.filter(data, i => _.includes(ids, i.id));
-                 this.initCombos()
-                 this.createChartData()
+                 this.httpService.callPost('getAllTests', null).subscribe(
+                   (testData: any) => {
+                     let ids = []
+                     for (let i = 0; i < testData.length; i++) {
+                       this.listaBambiniOrigin.push(testData[i].bambino)
+                       let proveSchede = testData[i].proveSchede
+                       for (let j = 0; j < proveSchede.length; j++) {
+                         let idIstituto = testData[i].bambino.idIstituto
+                         if (!ids.includes(idIstituto)) {
+                           ids.push(idIstituto)
+                         }
+                         proveSchede[j] = { ...proveSchede[j], ..._.find(data, u => u.id == idIstituto) }
+                         proveSchede[j].sezione = testData[i].bambino.sezione
+                         proveSchede[j].classe = testData[i].bambino.classe
+                       }
+                       this.provaSchedaList = this.provaSchedaList.concat(proveSchede)
+                       if (!this.sezioniOrigin.includes(testData[i].bambino.sezione)) {
+                         this.sezioniOrigin.push(testData[i].bambino.sezione)
+                       }
+                       if (!this.classiOrigin.includes(testData[i].bambino.classe)) {
+                         this.classiOrigin.push(testData[i].bambino.classe)
+                       }
+                     }
+                     this.istitutiOrigin =  _.filter(data, i => _.includes(ids, i.id));
+                     this.initCombos()
+                     this.createChartData()
                },
                (error: any) => { },
                () => { }
@@ -76,13 +79,17 @@ export class PaginaGraficiComponent implements OnInit {
       )
    }
 
+   initCombo(combo: string) {
+      return _(this.listaBambini).filter(o => o[combo]).groupBy(combo).keys().value();
+   }
+
    initCombos() {
       this.searchLists.istituto = this.istitutiOrigin
       this.searchLists.regione = _(this.istitutiOrigin).groupBy('regione').keys().value()
       this.searchLists.provincia = _(this.istitutiOrigin).groupBy('provincia').keys().value()
       this.searchLists.comune = _(this.istitutiOrigin).groupBy('comune').keys().value()
-      this.searchLists.classe = this.classiOrigin
-      this.searchLists.sezione = this.sezioniOrigin
+      this.searchLists.classe = this.initCombo('classe')
+      this.searchLists.sezione = this.initCombo('sezione')
    }
 
    resetCombos() {
@@ -91,53 +98,48 @@ export class PaginaGraficiComponent implements OnInit {
       this.createChartData()
    }
 
-   comboDisabled(combo: string) {
-      return combo === 'classe' || combo === 'sezione' ? _.isEmpty(this.searchModels.istituto) || !this.searchLists[combo].length : !this.searchLists[combo].length
-   }
+    comboDisabled(combo: string) {
+      return (combo === 'sezione' || combo === 'classe') &&
+      !(this.searchModels.istituto && this.searchModels.istituto.id > 1 && this.searchLists[combo].length)
+    }
+
+    findByCombo(combo: string) {
+      if (combo === 'istituto') {
+        this.searchLists.istituto = [this.searchModels[combo]]
+        this.listaBambini = _.filter(this.listaBambiniOrigin, ['idIstituto', this.searchModels[combo].id ])
+      } else if (combo == 'classe' || combo == 'sezione') {
+        this.listaBambini = _.filter(this.listaBambini, [combo, this.searchModels[combo] ])
+      } else {
+        this.searchLists.istituto = _.filter(this.istitutiOrigin, [combo, this.searchModels[combo]]);
+        let ids = _.map(this.searchLists.istituto, 'id');
+        this.listaBambini = _.filter(this.listaBambiniOrigin, bambino => _.includes(ids, bambino.idIstituto));
+      }
+      this.searchLists.regione = _(this.searchLists.istituto).groupBy('regione').keys().value()
+      this.searchLists.provincia = _(this.searchLists.istituto).groupBy('provincia').keys().value()
+      this.searchLists.comune = _(this.searchLists.istituto).groupBy('comune').keys().value()
+      this.searchLists.classe = this.initCombo('classe')
+      this.searchLists.sezione = this.initCombo('sezione')
+
+      this.searchModels.regione = this.searchLists.regione.length === 1 ? this.searchLists.regione[0] : {}
+      this.searchModels.provincia = this.searchLists.provincia.length === 1 ? this.searchLists.provincia[0] : {}
+      this.searchModels.comune = this.searchLists.comune.length === 1 ? this.searchLists.comune[0] : {}
+      this.searchModels.istituto = this.searchLists.istituto.length === 1 ? this.searchLists.istituto[0] : {}
+      this.searchModels.classe = this.searchLists.classe.length === 1 ? this.searchLists.classe[0] : {}
+      this.searchModels.sezione = this.searchLists.sezione.length === 1 ? this.searchLists.sezione[0] : {}
+
+      this.createChartData()
+    }
 
    createChartData() {
-      let proveScheda = this.provaSchedaList
-      let istituti = []
-      if (this.istitutiOrigin.length == 1) {
-         istituti = this.istitutiOrigin
-      }
-      if (this.searchModels.istituto.id) {
-         istituti = this.searchModels.istituto
-      } else if (!_.isEmpty(this.searchModels.comune)) {
-         istituti = _.filter(this.istitutiOrigin, { 'comune': this.searchModels.comune })
-      } else if (!_.isEmpty(this.searchModels.provincia)) {
-         istituti = _.filter(this.istitutiOrigin, { 'provincia': this.searchModels.provincia })
-      } else if (!_.isEmpty(this.searchModels.regione)) {
-         istituti = _.filter(this.istitutiOrigin, { 'regione': this.searchModels.regione })
-      }
-      if (istituti.length) {
-         this.searchLists.regione = _(istituti).groupBy('regione').keys().value()
-         this.searchLists.provincia = _(istituti).groupBy('provincia').keys().value()
-         this.searchLists.comune = _(istituti).groupBy('comune').keys().value()
-         this.searchLists.istituto = istituti
-         this.searchModels.regione = this.searchLists.regione.length === 1 ? this.searchLists.regione[0] : {}
-         this.searchModels.provincia = this.searchLists.provincia.length === 1 ? this.searchLists.provincia[0] : {}
-         this.searchModels.comune = this.searchLists.comune.length === 1 ? this.searchLists.comune[0] : {}
-         this.searchModels.istituto = this.searchLists.istituto.length === 1 ? this.searchLists.istituto[0] : {}
-         proveScheda = []
-         for (let i = 0; i < istituti.length; i++) {
-            proveScheda = proveScheda.concat(_.filter(this.provaSchedaList, { 'idIstituto': istituti[i].id }))
-         }
-         this.searchLists.classe = _(proveScheda).filter(function (o) { return o.classe !== null }).groupBy('classe').keys().value()
-         this.searchLists.sezione = _(proveScheda).filter(function (o) { return o.sezione !== null }).groupBy('sezione').keys().value()
-         if (_.isEmpty(this.searchModels.classe)) {
-            this.searchModels.classe = this.searchLists.classe.length === 1 ? this.searchLists.classe[0] : {}
-         }
-         if (_.isEmpty(this.searchModels.sezione)) {
-            this.searchModels.sezione = this.searchLists.sezione.length === 1 ? this.searchLists.sezione[0] : {}
-         }
-      }
-      if (!_.isEmpty(this.searchModels.classe)) {
-          proveScheda = _.filter(proveScheda, { 'classe': this.searchModels.classe })
-      }
-      if (!_.isEmpty(this.searchModels.sezione)) {
-         proveScheda = _.filter(proveScheda, { 'sezione': this.searchModels.sezione })
-      }
+      const filtri = _.pickBy({
+        regione: this.searchModels?.regione,
+        provincia: this.searchModels?.provincia,
+        comune: this.searchModels?.comune,
+        idIstituto: this.searchModels?.istituto?.id,
+        classe: this.searchModels?.classe,
+        sezione: this.searchModels?.sezione
+      }, v => v !== null && v !== undefined && v !== '' && !_.isEmpty(v));
+      let proveScheda = _.filter(this.provaSchedaList, filtri);
       let data: any[] = []
       if (proveScheda.length) {
          for (let i = 0; i < 12; i++) {

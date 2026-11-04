@@ -31,8 +31,8 @@ export class ChildListComponent implements OnInit {
             (data: any) => {
                 this.listaBambini = data
                 this.listaBambiniOrigin = data
-                this.searchLists.sezione = this.initComboSezione(this.listaBambini)
-                this.searchLists.classe = this.initComboClasse(this.listaBambini)
+                this.searchLists.sezione = this.initCombo('sezione')
+                this.searchLists.classe = this.initCombo('classe')
             },
             (error: any) => { },
             () => { }
@@ -91,20 +91,16 @@ export class ChildListComponent implements OnInit {
         this.searchLists.comune = _(this.istitutiOrigin).groupBy('comune').keys().value()
     }
 
-    initComboClasse(listaBambini: any) {
-      return _(listaBambini).filter(function (o) { return o.classe !== null }).groupBy('classe').keys().value()
-    }
-
-    initComboSezione(listaBambini: any) {
-        return _(listaBambini).filter(function (o) { return o.sezione !== null }).groupBy('sezione').keys().value()
+    initCombo(combo: string) {
+      return _(this.listaBambini).filter(o => o[combo]).groupBy(combo).keys().value();
     }
 
     resetCombos() {
         this.searchModels = { regione: {}, provincia: {}, comune: {}, istituto: {}, classe: {}, sezione: {} }
         this.listaBambini = this.listaBambiniOrigin
         this.initCombos()
-        this.searchLists.classe = this.initComboClasse(this.listaBambini)
-        this.searchLists.sezione = this.initComboSezione(this.listaBambini)
+        this.searchLists.classe = this.initCombo('classe')
+        this.searchLists.sezione = this.initCombo('sezione')
     }
 
     findByCombo(combo: string) {
@@ -121,8 +117,8 @@ export class ChildListComponent implements OnInit {
       this.searchLists.regione = _(this.searchLists.istituto).groupBy('regione').keys().value()
       this.searchLists.provincia = _(this.searchLists.istituto).groupBy('provincia').keys().value()
       this.searchLists.comune = _(this.searchLists.istituto).groupBy('comune').keys().value()
-      this.searchLists.classe = this.initComboClasse(this.listaBambini)
-      this.searchLists.sezione = this.initComboSezione(this.listaBambini)
+      this.searchLists.classe = this.initCombo('classe')
+      this.searchLists.sezione = this.initCombo('sezione')
 
       this.searchModels.regione = this.searchLists.regione.length === 1 ? this.searchLists.regione[0] : {}
       this.searchModels.provincia = this.searchLists.provincia.length === 1 ? this.searchLists.provincia[0] : {}
