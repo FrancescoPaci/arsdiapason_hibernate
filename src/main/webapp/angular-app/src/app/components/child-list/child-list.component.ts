@@ -108,56 +108,28 @@ export class ChildListComponent implements OnInit {
     }
 
     findByCombo(combo: string) {
-        if (combo === 'classe') {
-            let listaBambini = _(this.listaBambini).filter(b => b.classe == this.searchModels.classe).value();
-            let idIstituti = _(listaBambini).groupBy('idIstituto').keys().value()
-            this.searchLists.classe = this.initComboClasse(listaBambini)
-            for (let i = 0; i < idIstituti.length; i++) {
-                this.searchLists.istituto = _.filter(this.istitutiOrigin, ['id', parseInt(idIstituti[i])])
-            }
-        } else if (combo === 'sezione') {
-          let listaBambini = _(this.listaBambini).filter(['sezione', this.searchModels.sezione])
-          let idIstituti = _(listaBambini).groupBy('idIstituto').keys().value()
-          this.searchLists.sezione = this.initComboSezione(listaBambini)
-          for (let i = 0; i < idIstituti.length; i++) {
-            this.searchLists.istituto = _.filter(this.istitutiOrigin, ['id', parseInt(idIstituti[i])])
-          }
-        } else if (combo === 'istituto') {
-            this.searchLists.istituto = [this.searchModels[combo]]
-        } else {
-            this.searchLists.istituto = _.filter(this.istitutiOrigin, [combo, this.searchModels[combo]])
-        }
-        this.searchLists.regione = _(this.searchLists.istituto).groupBy('regione').keys().value()
-        this.searchLists.provincia = _(this.searchLists.istituto).groupBy('provincia').keys().value()
-        this.searchLists.comune = _(this.searchLists.istituto).groupBy('comune').keys().value()
-        this.listaBambini = []
-        for (let i = 0; i < this.searchLists.istituto.length; i++) {
-          if (!_.isEmpty(this.searchModels.classe) && !_.isEmpty(this.searchModels.sezione)) {
-            this.listaBambini = this.listaBambini.concat(_.filter(this.listaBambiniOrigin, b =>
-              b.idIstituto == this.searchLists.istituto[i].id
-              && b.classe == this.searchModels.classe
-              && b.sezione == this.searchModels.sezione
-            ))
-          } else if (!_.isEmpty(this.searchModels.classe)) {
-            this.listaBambini = this.listaBambini.concat(_.filter(this.listaBambiniOrigin, b =>
-              b.idIstituto == this.searchLists.istituto[i].id && b.classe == this.searchModels.classe
-            ))
-          } else if (!_.isEmpty(this.searchModels.sezione)) {
-            this.listaBambini = this.listaBambini.concat(_.filter(this.listaBambiniOrigin, { 'idIstituto': this.searchLists.istituto[i].id, 'sezione': this.searchModels.sezione }))
-          } else {
-            this.listaBambini = this.listaBambini.concat(_.filter(this.listaBambiniOrigin, { 'idIstituto': this.searchLists.istituto[i].id }))
-          }
-        }
+      if (combo === 'istituto') {
+        this.searchLists.istituto = [this.searchModels[combo]]
+        this.listaBambini = _.filter(this.listaBambini, ['idIstituto', this.searchModels[combo].id ])
+      } else if (combo == 'classe' || combo == 'sezione') {
+        this.listaBambini = _.filter(this.listaBambini, [combo, this.searchModels[combo] ])
+      } else {
+        this.searchLists.istituto = _.filter(this.istitutiOrigin, [combo, this.searchModels[combo]]);
+        let ids = _.map(this.searchLists.istituto, 'id');
+        this.listaBambini = _.filter(this.listaBambini, bambino => _.includes(ids, bambino.idIstituto));
+      }
+      this.searchLists.regione = _(this.searchLists.istituto).groupBy('regione').keys().value()
+      this.searchLists.provincia = _(this.searchLists.istituto).groupBy('provincia').keys().value()
+      this.searchLists.comune = _(this.searchLists.istituto).groupBy('comune').keys().value()
+      this.searchLists.classe = this.initComboClasse(this.listaBambini)
+      this.searchLists.sezione = this.initComboSezione(this.listaBambini)
 
-        this.searchLists.classe = this.initComboClasse(this.listaBambini)
-        this.searchModels.classe = this.searchLists.classe.length === 1 ? this.searchLists.classe[0] : {}
-        this.searchLists.sezione = this.initComboSezione(this.listaBambini)
-        this.searchModels.sezione = this.searchLists.sezione.length === 1 ? this.searchLists.sezione[0] : {}
-
-        this.searchModels.regione = this.searchLists.regione.length === 1 ? this.searchLists.regione[0] : {}
-        this.searchModels.provincia = this.searchLists.provincia.length === 1 ? this.searchLists.provincia[0] : {}
-        this.searchModels.comune = this.searchLists.comune.length === 1 ? this.searchLists.comune[0] : {}
-        this.searchModels.istituto = this.searchLists.istituto.length === 1 ? this.searchLists.istituto[0] : {}
+      this.searchModels.regione = this.searchLists.regione.length === 1 ? this.searchLists.regione[0] : {}
+      this.searchModels.provincia = this.searchLists.provincia.length === 1 ? this.searchLists.provincia[0] : {}
+      this.searchModels.comune = this.searchLists.comune.length === 1 ? this.searchLists.comune[0] : {}
+      this.searchModels.istituto = this.searchLists.istituto.length === 1 ? this.searchLists.istituto[0] : {}
+      this.searchModels.classe = this.searchLists.classe.length === 1 ? this.searchLists.classe[0] : {}
+      this.searchModels.sezione = this.searchLists.sezione.length === 1 ? this.searchLists.sezione[0] : {}
     }
 
     comboDisabled(combo: string) {
