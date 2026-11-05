@@ -7,16 +7,18 @@
       </div>
       <div [hidden]="!loggedIn()" class="subtitle">Bentornato {{user.nome}}</div>
     </a>
-    <button *ngIf="loggedIn()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button *ngIf="loggedIn()" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler" data-target="#navbarNavAltMarkup" data-toggle="collapse"
+            type="button">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div *ngIf="loggedIn()" class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav mr-auto">
-        <li class="nav-item" *ngFor="let p of pages" [hidden]="p.hidden">
+        <li *ngFor="let p of pages" [hidden]="p.hidden" class="nav-item">
           <a class="nav-link {{p.class}}" routerLink="{{p.route}}" routerLinkActive="active">{{p.title}}</a>
         </li>
       </div>
-      <span [hidden]="!loggedIn()" class="navbar-text c-pointer pr-5" (click)="logout()">Logout</span>
+      <span (click)="logout()" [hidden]="!loggedIn()" class="navbar-text c-pointer pr-5">Logout</span>
     </div>
   </nav>
 
@@ -29,6 +31,6 @@
 
 </div>
 
-<ngx-spinner size="medium" type="line-spin-fade" [fullScreen]="true">
+<ngx-spinner [fullScreen]="true" size="medium" type="line-spin-fade">
   <p style="color: white"> Loading... </p>
 </ngx-spinner>

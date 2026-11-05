@@ -1,15 +1,15 @@
-<form name="form" (ngSubmit)="f.form.valid && confirmAccount()" #f="ngForm" novalidate>
+<form #f="ngForm" (ngSubmit)="f.form.valid && confirmAccount()" name="form" novalidate>
 
   <div class="row mt-3">
     <div class="col-3">
       <label>Password</label>
-      <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="password" required />
+      <input [(ngModel)]="password" class="form-control form-control-sm" name="password" required type="password"/>
     </div>
   </div>
 
   <div class="row mt-3">
     <div class="col-3">
-      <button class="btn btn-primary" type="submit" [disabled]="f.form.invalid">Conferma</button>
+      <button [disabled]="f.form.invalid" class="btn btn-primary" type="submit">Conferma</button>
     </div>
   </div>
 

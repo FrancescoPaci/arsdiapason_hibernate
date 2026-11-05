@@ -3,33 +3,37 @@ import {HttpService} from '../../services/http.service'
 import {ActivatedRoute, Router} from '@angular/router'
 
 @Component({
-    selector: 'app-confirm-account',
-    templateUrl: './confirm-account.component.html',
-    styleUrls: ['./confirm-account.component.css']
+  selector: 'app-confirm-account',
+  templateUrl: './confirm-account.component.html',
+  styleUrls: ['./confirm-account.component.css']
 })
 export class ConfirmAccountComponent implements OnInit {
 
-    constructor(private httpService: HttpService, private router: Router, private activedRoute: ActivatedRoute) { }
+  temporaryCode: string = this.activedRoute.snapshot.paramMap.get("temporaryCode")
+  email: string = this.activedRoute.snapshot.paramMap.get("email")
+  password: string
 
-    ngOnInit(): void { }
+  constructor(private httpService: HttpService, private router: Router, private activedRoute: ActivatedRoute) {
+  }
 
-    temporaryCode: string = this.activedRoute.snapshot.paramMap.get("temporaryCode")
-    email: string = this.activedRoute.snapshot.paramMap.get("email")
-    password: string
+  ngOnInit(): void {
+  }
 
-    confirmAccount() {
-        if (this.temporaryCode && this.email && this.password) {
-            let params = { email: this.email, password: this.password, temporaryCode: this.temporaryCode }
-            this.httpService.callPost('confirmAccount', params).subscribe(
-                (data: any) => {
-                    sessionStorage.setItem('auth', window.btoa(this.email + ":" + this.password))
-                    sessionStorage.setItem('user', JSON.stringify(data))
-                    this.router.navigate(['gestisciIstituti'])
-                },
-                (error: any) => { },
-                () => { }
-            )
+  confirmAccount() {
+    if (this.temporaryCode && this.email && this.password) {
+      let params = {email: this.email, password: this.password, temporaryCode: this.temporaryCode}
+      this.httpService.callPost('confirmAccount', params).subscribe(
+        (data: any) => {
+          sessionStorage.setItem('auth', window.btoa(this.email + ":" + this.password))
+          sessionStorage.setItem('user', JSON.stringify(data))
+          this.router.navigate(['gestisciIstituti'])
+        },
+        (error: any) => {
+        },
+        () => {
         }
+      )
     }
+  }
 
 }

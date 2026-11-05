@@ -1,6 +1,6 @@
 <div class="modal-header {{textColor}}">
   <h4 class="modal-title pull-left font-weight-bold">{{title}}</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+  <button (click)="bsModalRef.hide()" aria-label="Close" class="close pull-right" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -8,5 +8,5 @@
   <strong [innerHTML]="text"></strong>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Chiudi</button>
+  <button (click)="bsModalRef.hide()" class="btn btn-default" type="button">Chiudi</button>
 </div>

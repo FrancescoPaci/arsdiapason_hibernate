@@ -15,20 +15,20 @@ import {ResetPasswordComponent} from './components/reset-password/reset-password
 import {MailResetPasswordComponent} from './components/mail-reset-password/mail-reset-password.component'
 
 const routes: Routes = [
-  { path: 'loginPage', component: LoginComponent },
-  { path: 'confirmAccount/:email/:temporaryCode', component: ConfirmAccountComponent },
-  { path: 'mailResetPassword', component: MailResetPasswordComponent },
-  { path: 'resetPassword/:email/:temporaryCode', component: ResetPasswordComponent },
-  { path: 'createAccount', component: CreateAccountComponent },
-  { path: 'childList', component: ChildListComponent, canActivate: [RouteGuardService] },
-  { path: 'insertChild', component: InsertChildComponent, canActivate: [RouteGuardService] },
-  { path: 'testBalconi', component: TestBalconiComponent, canActivate: [RouteGuardService] },
-  { path: 'testBalconi/:id', component: TestBalconiComponent, canActivate: [RouteGuardService] },
-  { path: 'gestisciIstituti', component: GestisciIstitutiComponent, canActivate: [RouteGuardService] },
-  { path: 'testResult/:id', component: TestResultComponent, canActivate: [RouteGuardService] },
-  { path: 'paginaGrafici', component: PaginaGraficiComponent, canActivate: [RouteGuardService] },
-  { path: '', redirectTo: 'gestisciIstituti', pathMatch: 'full', canActivate: [RouteGuardService] },
-  { path: '**', redirectTo: 'gestisciIstituti', pathMatch: 'full', canActivate: [RouteGuardService] },
+  {path: 'loginPage', component: LoginComponent},
+  {path: 'confirmAccount/:email/:temporaryCode', component: ConfirmAccountComponent},
+  {path: 'mailResetPassword', component: MailResetPasswordComponent},
+  {path: 'resetPassword/:email/:temporaryCode', component: ResetPasswordComponent},
+  {path: 'createAccount', component: CreateAccountComponent},
+  {path: 'childList', component: ChildListComponent, canActivate: [RouteGuardService]},
+  {path: 'insertChild', component: InsertChildComponent, canActivate: [RouteGuardService]},
+  {path: 'testBalconi', component: TestBalconiComponent, canActivate: [RouteGuardService]},
+  {path: 'testBalconi/:id', component: TestBalconiComponent, canActivate: [RouteGuardService]},
+  {path: 'gestisciIstituti', component: GestisciIstitutiComponent, canActivate: [RouteGuardService]},
+  {path: 'testResult/:id', component: TestResultComponent, canActivate: [RouteGuardService]},
+  {path: 'paginaGrafici', component: PaginaGraficiComponent, canActivate: [RouteGuardService]},
+  {path: '', redirectTo: 'gestisciIstituti', pathMatch: 'full', canActivate: [RouteGuardService]},
+  {path: '**', redirectTo: 'gestisciIstituti', pathMatch: 'full', canActivate: [RouteGuardService]},
 ]
 
 @NgModule({
@@ -36,4 +36,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [RouteGuardService]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

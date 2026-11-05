@@ -1,22 +1,22 @@
 <div class="row">
 
   <div class="col-5">
-    <form name="form" (ngSubmit)="f.form.valid && inserisciIstituto()" #f="ngForm" novalidate>
+    <form #f="ngForm" (ngSubmit)="f.form.valid && inserisciIstituto()" name="form" novalidate>
       <fieldset>
         <legend class="second-title">Inserisci Nuovo Istituto</legend>
 
         <div class="row mb-3">
           <div class="col-6">
             <label>Nome</label>
-            <input type="text" class="form-control form-control-sm" name="nome" [(ngModel)]="newIstituto.nome"
-                   required/>
+            <input [(ngModel)]="newIstituto.nome" class="form-control form-control-sm" name="nome" required
+                   type="text"/>
           </div>
           <div class="col-6">
             <label>Regione</label>
-            <select [(ngModel)]="newIstituto.regione"
+            <select (change)="onRegionChange($event.target.value)"
+                    [(ngModel)]="newIstituto.regione"
                     class="form-control form-control-sm"
                     name="regione"
-                    (change)="onRegionChange($event.target.value)"
                     required>
               <option *ngFor="let reg of regioni" [value]="reg">{{ reg }}</option>
             </select>
@@ -27,29 +27,29 @@
           <div class="col-6">
             <label>Provincia</label>
             <select [(ngModel)]="newIstituto.provincia"
+                    [disabled]="!newIstituto.regione"
                     class="form-control form-control-sm"
                     name="provincia"
-                    [disabled]="!newIstituto.regione"
                     required>
               <option *ngFor="let prov of province" [value]="prov">{{ prov }}</option>
             </select>
           </div>
           <div class="col-6">
             <label>Comune</label>
-            <input type="text"
+            <input [(ngModel)]="newIstituto.comune"
+                   [disabled]="!newIstituto.provincia"
                    class="form-control form-control-sm"
                    name="comune"
-                   [(ngModel)]="newIstituto.comune"
-                   [disabled]="!newIstituto.provincia"
-              required />
+                   required
+                   type="text"/>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-6">
             <label>Indirizzo</label>
-            <input type="text" class="form-control form-control-sm" name="indirizzo" [(ngModel)]="newIstituto.indirizzo"
-                   required/>
+            <input [(ngModel)]="newIstituto.indirizzo" class="form-control form-control-sm" name="indirizzo" required
+                   type="text"/>
           </div>
           <div class="col-3">
             <label>Tipo</label>
@@ -64,22 +64,23 @@
         <div class="row mb-3">
           <div class="col-12">
             <label>Sezioni</label>
-            <input type="text" class="form-control form-control-sm" name="sezioni" [(ngModel)]="newIstituto.sezioni"
-                   placeholder="Inserire le sezioni separate dalla virgola" required/>
+            <input [(ngModel)]="newIstituto.sezioni" class="form-control form-control-sm" name="sezioni"
+                   placeholder="Inserire le sezioni separate dalla virgola"
+                   required type="text"/>
           </div>
         </div>
 
         <div class="row align-items-end">
           <div class="col-12" style="text-align: right">
-            <button class="btn btn-primary mr-3" type="submit" [disabled]="f.form.invalid">Salva</button>
-            <button class="btn btn-primary" (click)="svuotaCampi()">Svuota Campi</button>
+            <button [disabled]="f.form.invalid" class="btn btn-primary mr-3" type="submit">Salva</button>
+            <button (click)="svuotaCampi()" class="btn btn-primary">Svuota Campi</button>
           </div>
         </div>
       </fieldset>
     </form>
   </div>
 
-  <div class="col-7" *ngIf="istituti.length">
+  <div *ngIf="istituti.length" class="col-7">
     <form [formGroup]="istitutiForm">
       <div class="text-center second-title mb-1">Lista Istituti Inseriti</div>
       <table class="table table-sm table-striped">
@@ -111,27 +112,27 @@
             </td>
 
             <td class="buttons">
-              <button class="btn btn-primary btn-sm" (click)="istituto.inModifica = true" tooltip="Modifica">
+              <button (click)="istituto.inModifica = true" class="btn btn-primary btn-sm" tooltip="Modifica">
                 <i class="fa fa-pencil"></i>
               </button>
-              <button class="btn btn-primary btn-sm ml-1" (click)="eliminaIstituto(i)" tooltip="Elimina">
+              <button (click)="eliminaIstituto(i)" class="btn btn-primary btn-sm ml-1" tooltip="Elimina">
                 <i class="fa fa-trash-o"></i>
               </button>
             </td>
           </ng-container>
           <ng-container *ngIf="istituto.inModifica" [formGroupName]="i">
-            <td><input type="text" formControlName="nome" class="form-control form-control-sm"></td>
-            <td><input type="text" formControlName="regione" class="form-control form-control-sm"></td>
-            <td><input type="text" formControlName="provincia" class="form-control form-control-sm"></td>
-            <td><input type="text" formControlName="comune" class="form-control form-control-sm"></td>
-            <td><input type="text" formControlName="indirizzo" class="form-control form-control-sm"></td>
-            <td><input type="text" formControlName="sezioni" class="form-control form-control-sm"></td>
+            <td><input class="form-control form-control-sm" formControlName="nome" type="text"></td>
+            <td><input class="form-control form-control-sm" formControlName="regione" type="text"></td>
+            <td><input class="form-control form-control-sm" formControlName="provincia" type="text"></td>
+            <td><input class="form-control form-control-sm" formControlName="comune" type="text"></td>
+            <td><input class="form-control form-control-sm" formControlName="indirizzo" type="text"></td>
+            <td><input class="form-control form-control-sm" formControlName="sezioni" type="text"></td>
             <td class="buttons">
-              <button class="btn btn-primary btn-sm" type="submit" (click)="saveModIstituto(i)"
-                      [disabled]="formInvalid(i)" tooltip="Salva">
+              <button (click)="saveModIstituto(i)" [disabled]="formInvalid(i)" class="btn btn-primary btn-sm"
+                      tooltip="Salva" type="submit">
                 <i class="fa fa-save"></i>
               </button>
-              <button class="btn btn-primary btn-sm ml-1" (click)="cancelModIstituto(i)" tooltip="Annulla">
+              <button (click)="cancelModIstituto(i)" class="btn btn-primary btn-sm ml-1" tooltip="Annulla">
                 <i class="fa fa-times"></i>
               </button>
             </td>

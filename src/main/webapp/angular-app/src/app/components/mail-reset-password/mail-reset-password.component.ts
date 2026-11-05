@@ -10,13 +10,15 @@ import {Router} from '@angular/router'
 })
 export class MailResetPasswordComponent implements OnInit {
 
-  constructor(private httpService: HttpService, private memoService: MemoService, private router: Router) { }
-
-  ngOnInit(): void { }
-
   patternEmail: string = this.memoService.emailRegex
   model: any = {}
   successMsg: string
+
+  constructor(private httpService: HttpService, private memoService: MemoService, private router: Router) {
+  }
+
+  ngOnInit(): void {
+  }
 
   sendResetPasswordEmail() {
     this.model.appUrl = window.location.origin
@@ -24,8 +26,10 @@ export class MailResetPasswordComponent implements OnInit {
       (data: any) => {
         this.successMsg = "Ti è stata inviata una mail per reimpostare la password"
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 

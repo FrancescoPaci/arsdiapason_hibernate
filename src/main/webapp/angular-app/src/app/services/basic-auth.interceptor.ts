@@ -10,55 +10,56 @@ import {NgxSpinnerService} from 'ngx-spinner'
 @Injectable()
 export class BasicAuthInterceptor implements HttpInterceptor {
 
-    constructor(private modalService: BsModalService, private router: Router, private spinner: NgxSpinnerService) { }
+  constructor(private modalService: BsModalService, private router: Router, private spinner: NgxSpinnerService) {
+  }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        this.spinner.show()
-        if (request.url.startsWith("/api/")) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: 'Basic ' + sessionStorage.getItem('auth')
-                }
-            })
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.spinner.show()
+    if (request.url.startsWith("/api/")) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: 'Basic ' + sessionStorage.getItem('auth')
         }
-        return next.handle(request).pipe(
-            catchError((error: { status: number; error: any }) => {
-                if (error.status === 401) {
-                    sessionStorage.removeItem('auth')
-                    sessionStorage.removeItem('user')
-                    this.router.navigate(['loginPage'])
-                } else if (error.status === 504) {
-                    this.openServerOffModal()
-                } else {
-                    this.openErrorModal(error.error)
-                }
-                return next.handle(request)
-            }),
-            finalize(() => {
-                this.spinner.hide()
-            })
-        )
+      })
     }
-
-    hideSpinner(request: HttpRequest<any>) {
+    return next.handle(request).pipe(
+      catchError((error: { status: number; error: any }) => {
+        if (error.status === 401) {
+          sessionStorage.removeItem('auth')
+          sessionStorage.removeItem('user')
+          this.router.navigate(['loginPage'])
+        } else if (error.status === 504) {
+          this.openServerOffModal()
+        } else {
+          this.openErrorModal(error.error)
+        }
+        return next.handle(request)
+      }),
+      finalize(() => {
         this.spinner.hide()
-        return request
-    }
+      })
+    )
+  }
 
-    openErrorModal(error: any) {
-        const initialState = {
-            title: "Si è verificato un errore",
-            text: error.message
-        }
-        this.modalService.show(AlertModalComponent, { initialState })
-    }
+  hideSpinner(request: HttpRequest<any>) {
+    this.spinner.hide()
+    return request
+  }
 
-    openServerOffModal() {
-        const initialState = {
-            title: "Attenzione",
-            text: "Il server non risponde"
-        }
-        this.modalService.show(AlertModalComponent, { initialState })
-        this.router.navigate(['loginPage'])
+  openErrorModal(error: any) {
+    const initialState = {
+      title: "Si è verificato un errore",
+      text: error.message
     }
+    this.modalService.show(AlertModalComponent, {initialState})
+  }
+
+  openServerOffModal() {
+    const initialState = {
+      title: "Attenzione",
+      text: "Il server non risponde"
+    }
+    this.modalService.show(AlertModalComponent, {initialState})
+    this.router.navigate(['loginPage'])
+  }
 }

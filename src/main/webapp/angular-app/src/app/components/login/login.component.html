@@ -1,24 +1,24 @@
-<form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
+<form #f="ngForm" (ngSubmit)="f.form.valid && login()" name="form" novalidate>
 
   <div class="row mt-3">
     <div class="col-3">
       <label>Email</label>
-      <input type="text" class="form-control form-control-sm" name="email" [(ngModel)]="model.email"
-        [pattern]="patternEmail" required />
+      <input [(ngModel)]="model.email" [pattern]="patternEmail" class="form-control form-control-sm" name="email"
+             required type="text"/>
     </div>
   </div>
 
   <div class="row mt-3">
     <div class="col-3">
       <label>Password</label>
-      <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="model.password"
-        required />
+      <input [(ngModel)]="model.password" class="form-control form-control-sm" name="password" required
+             type="password"/>
     </div>
   </div>
 
   <div class="row mt-3">
     <div class="col-3">
-      <button class="btn btn-primary pull-right" type="submit" [disabled]="f.form.invalid">Log In</button>
+      <button [disabled]="f.form.invalid" class="btn btn-primary pull-right" type="submit">Log In</button>
     </div>
   </div>
 
@@ -26,16 +26,16 @@
 
 <div class="row mt-3">
   <div class="col-2">
-    <button class="btn btn-primary" (click)="goToResetPassword()">Password dimenticata?</button>
+    <button (click)="goToResetPassword()" class="btn btn-primary">Password dimenticata?</button>
   </div>
   <div class="col-1">
-    <button class="btn btn-primary pull-right" (click)="goToRegister()">Registrati</button>
+    <button (click)="goToRegister()" class="btn btn-primary pull-right">Registrati</button>
   </div>
 </div>
 
 <div class="row mt-3">
   <div class="col-3">
-    <div class="alert alert-danger" [hidden]="!errMsg">
+    <div [hidden]="!errMsg" class="alert alert-danger">
       <strong>{{errMsg}}</strong>
     </div>
   </div>

@@ -1,8 +1,8 @@
 <div class="row align-items-end mb-2">
   <div *ngFor="let combo of searchCombos" class="{{getColSpan(combo)}}">
     <label class="font-weight-bold">{{combo | capitalize}}</label>
-    <select class="custom-select custom-select-sm" name="{{combo}}" [(ngModel)]="searchModels[combo]"
-            (ngModelChange)="findByCombo(combo)" [disabled]="comboDisabled(combo)">
+    <select [(ngModel)]="searchModels[combo]" (ngModelChange)="findByCombo(combo)" [disabled]="comboDisabled(combo)"
+            class="custom-select custom-select-sm" name="{{combo}}">
       <option *ngFor="let x of searchLists[combo]" [ngValue]="x">{{combo === 'istituto' ? x.nome : x}}</option>
     </select>
   </div>
@@ -14,7 +14,7 @@
 <div class="row align-items-end mb-2">
   <div class="col-5 form-inline">
     <label class="mr-3">Cerca per cognome:</label>
-    <input [(ngModel)]="searchCognome" (keyup)="searchChild()" type="text" class="form-control form-control-sm">
+    <input (keyup)="searchChild()" [(ngModel)]="searchCognome" class="form-control form-control-sm" type="text">
   </div>
 </div>
 
@@ -53,7 +53,7 @@
           <td>{{child.testFinito | testFinito}}</td>
           <td style="width: 0">
             <button (click)="child.showDetail = !child.showDetail" class="btn btn-primary btn-sm" tooltip="Dettagli">
-              <i class="fa" [ngClass]="{'fa-plus': !child.showDetail, 'fa-minus': child.showDetail}"></i>
+              <i [ngClass]="{'fa-plus': !child.showDetail, 'fa-minus': child.showDetail}" class="fa"></i>
             </button>
           </td>
           <td style="width: 0">
@@ -63,20 +63,20 @@
             </button>
           </td>
           <td style="width: 0">
-            <button *ngIf="child.testFinito" (click)="goToTestResult(child.id)" class="btn btn-success btn-sm"
-                    tooltip="Risultato del Test" placement="left">
+            <button (click)="goToTestResult(child.id)" *ngIf="child.testFinito" class="btn btn-success btn-sm"
+                    placement="left" tooltip="Risultato del Test">
               <i class="fa fa-search"></i>
             </button>
           </td>
           <td style="width: 0">
             <button (click)="modifyChild(child)" class="btn btn-success btn-sm"
-                    tooltip="Modifica Bambino" placement="left">
+                    placement="left" tooltip="Modifica Bambino">
               <i class="fa fa-pencil"></i>
             </button>
           </td>
           <td style="width: 0">
             <button (click)="deleteChild(child.id)" class="btn btn-danger btn-sm"
-                    tooltip="Elimina Bambino" placement="left">
+                    placement="left" tooltip="Elimina Bambino">
               <i class="fa fa-trash-o"></i>
             </button>
           </td>

@@ -9,7 +9,8 @@ export class MemoService {
   emailRegex: string
   passwordRegex: string
 
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService) {
+  }
 
   initRegex() {
     return new Promise<void>((resolve) => {

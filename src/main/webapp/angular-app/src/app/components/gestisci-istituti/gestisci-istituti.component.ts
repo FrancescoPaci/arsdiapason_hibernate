@@ -11,6 +11,13 @@ import * as _ from 'lodash'
 })
 export class GestisciIstitutiComponent implements OnInit {
 
+  regioni = REGIONI_ITALIANE;
+  province: string[] = [];
+  istitutiForm: any
+  istitutiFormOrigin: any
+  istituti: any = []
+  newIstituto: any = {}
+
   constructor(private httpService: HttpService, private formBuilder: FormBuilder) {
     this.istitutiForm = this.formBuilder.group({
       istitutiRows: this.formBuilder.array([])
@@ -20,13 +27,6 @@ export class GestisciIstitutiComponent implements OnInit {
   ngOnInit(): void {
     this.getListaIstituti()
   }
-
-  regioni = REGIONI_ITALIANE;
-  province: string[] = [];
-  istitutiForm: any
-  istitutiFormOrigin: any
-  istituti: any = []
-  newIstituto: any = {}
 
   getListaIstituti() {
     this.httpService.callPost('getListaIstituti', null).subscribe(

@@ -7,10 +7,12 @@ import {Component, Input, OnInit} from '@angular/core'
 })
 export class SpecchiettoBambinoComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit(): void { }
-
   @Input() bambino: any
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+  }
 
 }

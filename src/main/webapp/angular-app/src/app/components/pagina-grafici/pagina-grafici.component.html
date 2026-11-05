@@ -1,7 +1,8 @@
 <div [hidden]="provaSchedaList.length" class="row">
   <div class="col-8">
     <div class="alert alert-info">
-      <strong>Non risulta presente nessun test per nessun bambino. Per fare il test clicca sul pulsante 'Fai il Test' sulla riga di un bambino dalla pagina
+      <strong>Non risulta presente nessun test per nessun bambino. Per fare il test clicca sul pulsante 'Fai il Test'
+        sulla riga di un bambino dalla pagina
         <a [routerLink]="['/childList']" routerLinkActive="active">Lista Bambini</a>
       </strong>
     </div>
@@ -10,8 +11,8 @@
 <div *ngIf="provaSchedaList.length" class="row align-items-end mb-2">
   <div *ngFor="let combo of searchCombos" class="{{combo == 'classe' || combo == 'sezione' ? 'col-1' : 'col-2'}}">
     <label class="font-weight-bold">{{combo | capitalize}}</label>
-    <select class="custom-select custom-select-sm" name="{{combo}}" [(ngModel)]="searchModels[combo]"
-      (ngModelChange)="findByCombo(combo)" [disabled]="comboDisabled(combo)">
+    <select [(ngModel)]="searchModels[combo]" (ngModelChange)="findByCombo(combo)" [disabled]="comboDisabled(combo)"
+            class="custom-select custom-select-sm" name="{{combo}}">
       <option *ngFor="let x of searchLists[combo]" [ngValue]="x">{{combo === 'istituto' ? x.nome : x}}</option>
     </select>
   </div>
@@ -20,7 +21,7 @@
   </div>
 </div>
 
-<div class="row" [hidden]="!showChart || data.length">
+<div [hidden]="!showChart || data.length" class="row">
   <div class="col-3 offset-4 pt-5">
     <div class="alert alert-info text-center">
       <strong>Non sono presenti dati</strong>
@@ -30,8 +31,8 @@
 
 <div class="row">
   <div class="col-12" id="chart-div">
-    <google-chart #chart *ngIf="data.length" [type]="type" [data]="data" [columns]="columns" [options]="options"
-      [width]="width" [height]="height">
+    <google-chart #chart *ngIf="data.length" [columns]="columns" [data]="data" [height]="height" [options]="options"
+                  [type]="type" [width]="width">
     </google-chart>
   </div>
 </div>

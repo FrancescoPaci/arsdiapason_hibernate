@@ -10,10 +10,6 @@ import {ActivatedRoute, Router} from '@angular/router'
 })
 export class ResetPasswordComponent implements OnInit {
 
-  constructor(private httpService: HttpService, private memoService: MemoService, private router: Router, private activedRoute: ActivatedRoute) { }
-
-  ngOnInit(): void { }
-
   temporaryCode: string = this.activedRoute.snapshot.paramMap.get("temporaryCode")
   email: string = this.activedRoute.snapshot.paramMap.get("email")
   password: string
@@ -22,16 +18,24 @@ export class ResetPasswordComponent implements OnInit {
   errMsg: string
   patternPassword: string = this.memoService.passwordRegex
 
+  constructor(private httpService: HttpService, private memoService: MemoService, private router: Router, private activedRoute: ActivatedRoute) {
+  }
+
+  ngOnInit(): void {
+  }
+
   resetPassword() {
-    let payload = { email: this.email, password: this.password, temporaryCode: this.temporaryCode }
+    let payload = {email: this.email, password: this.password, temporaryCode: this.temporaryCode}
     this.httpService.callPost('resetPassword', payload).subscribe(
       (data: any) => {
         sessionStorage.setItem('auth', window.btoa(this.email + ":" + this.password))
         sessionStorage.setItem('user', JSON.stringify(data))
         this.router.navigate(['gestisciIstituti'])
       },
-      (error: any) => { },
-      () => { }
+      (error: any) => {
+      },
+      () => {
+      }
     )
   }
 

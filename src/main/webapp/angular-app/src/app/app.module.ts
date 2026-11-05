@@ -67,11 +67,17 @@ registerLocaleData(localeIt);
     NgxSpinnerModule
   ],
   providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: 'it-IT' },
-    { provide: APP_INITIALIZER, multi: true, deps: [MemoService], useFactory: (memoService: MemoService) => () => memoService.initRegex() }
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    {provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true},
+    {provide: LOCALE_ID, useValue: 'it-IT'},
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [MemoService],
+      useFactory: (memoService: MemoService) => () => memoService.initRegex()
+    }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
