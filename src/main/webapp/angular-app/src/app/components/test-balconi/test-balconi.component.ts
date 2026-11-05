@@ -60,13 +60,15 @@ export class TestBalconiComponent implements OnInit {
           for (let j = 0; j < rows.length; j++) {
             rows[j].checked = !!_.find(this.relBambinoSchede, {'idProvaScheda': rows[j].id})
           }
-          this.tipiScheda[scheda.numero].push({tipo: null, rows: rows, noResult: !_.find(rows, r => r.checked)})
+          let noResult = this.bambino?.testFinito && !_.find(rows, r => r.checked)
+          this.tipiScheda[scheda.numero].push({tipo: null, rows: rows, noResult: noResult})
         } else {
           let rows = _.filter(this.proveSchede, {'numeroScheda': scheda.numero, 'tipo': tipi[i]})
           for (let j = 0; j < rows.length; j++) {
             rows[j].checked = !!_.find(this.relBambinoSchede, {'idProvaScheda': rows[j].id})
           }
-          this.tipiScheda[scheda.numero].push({tipo: tipi[i], rows: rows, noResult: !_.find(rows, r => r.checked)})
+          let noResult = this.bambino?.testFinito && !_.find(rows, r => r.checked)
+          this.tipiScheda[scheda.numero].push({tipo: tipi[i], rows: rows, noResult: noResult})
         }
       }
     }
